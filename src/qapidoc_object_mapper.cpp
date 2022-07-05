@@ -390,7 +390,7 @@ bool ObjectMapper::read(const QVariant &value)
         if (object_ignore_methods.contains(property.name()))
             continue;
 
-        propertList.insert(QByteArray(property.name()).toLower(), property);
+        propertList.insert(QByteArray{property.name()}.toLower(), property);
     }
 
     bool __return = false;
@@ -423,7 +423,7 @@ bool ObjectMapper::load(QObject *object)
         if (object_ignore_methods.contains(property.name()))
             continue;
 
-        vHash[QByteArray(property.name()).toLower()] = property.read(object);
+        vHash[QByteArray{property.name()}.toLower()] = property.read(object);
     }
     return this->read(vHash);
 }
