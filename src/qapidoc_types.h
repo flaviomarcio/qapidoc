@@ -19,7 +19,7 @@
 namespace QApiDoc {
 
 //!
-//! \brief QByteArrayList
+//! \brief QStringList
 //!
 typedef QVector<QByteArray> QByteArrayList;
 
@@ -27,6 +27,6 @@ typedef QVector<QByteArray> QByteArrayList;
 //! \brief object_ignore_methods
 //! \return
 //!
-const QByteArrayList &object_ignore_methods();
+const QStringList &object_ignore_methods();
 
 } // namespace QApiDoc

@@ -11,7 +11,7 @@
 #include "./qapidoc_includes.h"
 
 namespace QApiDoc {
-
+class DocumentPvt;
 //!
 //! \brief The QSwaggerDoc class
 //!
@@ -23,7 +23,7 @@ class Q_API_DOC_EXPORT Document : public ObjectMapper
     Q_OBJECT
 
 public:
-    Q_PROPERTY(QString swagger READ version CONSTANT)
+    Q_PROPERTY(QByteArray swagger READ version CONSTANT)
 
     //!
     //!
@@ -86,7 +86,7 @@ public:
     //! \brief version
     //! \return
     //!
-    QString version() const;
+    QByteArray version() const;
 
     //!
     //! \brief loadFromParent
@@ -236,7 +236,7 @@ public:
     Document &resetExternalDocs();
 
 public:
-    const QString qapi_ger_version = QStringLiteral("2.0");
+    const QByteArray qapi_ger_version = QByteArrayLiteral("2.0");
     const QStringList qapi_transfer_protocol_scheme = {QString(),
                                                        QStringLiteral("http"),
                                                        QStringLiteral("https"),
@@ -258,7 +258,7 @@ signals:
     void parametersChanged();
 
 private:
-    void *p = nullptr;
+    DocumentPvt *p = nullptr;
 };
 
 } // namespace QApiDoc

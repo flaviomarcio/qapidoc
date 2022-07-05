@@ -3,33 +3,33 @@
 #include "./qapidoc_meta_types.h"
 #include "./qapidoc_types.h"
 #include <QDir>
+#include <QStringList>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QMetaMethod>
 #include <QMetaProperty>
+#include <QStringList>
 
 namespace QApiDoc {
-
-#define dPvt() auto &p = *reinterpret_cast<DocumentPvt *>(this->p)
 
 class DocumentPvt
 {
 public:
     Document *parent = nullptr;
-    DocumentExternal _externalDocs;
-    Info _info;
-    QStringList _basePath = {QStringLiteral("/")};
-    QString _host = QStringLiteral("localhost");
-    QVariantList _consumes;
-    QVariantList _produces;
-    QList<Definition *> _definitions;
-    QList<Parameter *> _parameters;
-    QList<Path *> _paths;
-    QList<SecurityDefinition *> _securityDefinitions;
-    QList<Tag *> _tags;
-    QApiTransferProtocolSchemes _schemes;
+    DocumentExternal externalDocs;
+    Info info;
+    QStringList basePath;
+    QString host = QStringLiteral("localhost");
+    QVariantList consumes;
+    QVariantList produces;
+    QList<Definition *> definitions;
+    QList<Parameter *> parameters;
+    QList<Path *> paths;
+    QList<SecurityDefinition *> securityDefinitions;
+    QList<Tag *> tags;
+    QApiTransferProtocolSchemes schemes;
     explicit DocumentPvt(Document *parent) { this->parent = parent; }
 
     virtual ~DocumentPvt() {}
@@ -42,10 +42,10 @@ Document::Document(QObject *parent) : ObjectMapper{parent}
 
 Document::~Document()
 {
-    dPvtFree();
+    delete p;
 }
 
-QString Document::version() const
+QByteArray Document::version() const
 {
     return this->qapi_ger_version;
 }
@@ -123,8 +123,8 @@ bool Document::load(QObject *object)
 
 const QStringList &Document::basePath() const
 {
-    dPvt();
-    return p._basePath;
+
+    return p->basePath;
 }
 
 Document &Document::basePath(const QVariant &newBasePath)
@@ -135,8 +135,8 @@ Document &Document::basePath(const QVariant &newBasePath)
 
 Document &Document::setBasePath(const QVariant &newBasePath)
 {
-    dPvt();
-    if (p._basePath == newBasePath)
+
+    if (p->basePath == newBasePath.toStringList())
         return *this;
     switch (qTypeId(newBasePath)) {
         case QMetaType_QStringList:
@@ -146,12 +146,12 @@ Document &Document::setBasePath(const QVariant &newBasePath)
                 auto path=v.toString().trimmed().toLower();
                 if(path.isEmpty())
                     continue;
-                p._basePath << path;
+                p->basePath.append(path);
             }
             break;
         }
         default:
-            p._basePath<<QStringLiteral("/");
+            p->basePath.append(QStringLiteral("/"));
     }
     emit basePathChanged();
     return *this;
@@ -164,8 +164,8 @@ Document &Document::resetBasePath()
 
 const QString &Document::host() const
 {
-    dPvt();
-    return p._host;
+
+    return p->host;
 }
 
 Document &Document::host(const QString &newHost)
@@ -175,10 +175,10 @@ Document &Document::host(const QString &newHost)
 
 Document &Document::setHost(const QString &newHost)
 {
-    dPvt();
-    if (p._host == newHost)
+
+    if (p->host == newHost)
         return *this;
-    p._host = newHost;
+    p->host = newHost;
     emit hostChanged();
     return *this;
 }
@@ -190,10 +190,10 @@ Document &Document::resetHost()
 
 const QVariantList Document::schemesObject() const
 {
-    dPvt();
+
     QVariantList __return;
     for (auto &item : qapiTransferProtocolScheme()) {
-        if (!p._schemes.testFlag(item))
+        if (!p->schemes.testFlag(item))
             continue;
         __return << this->qapi_transfer_protocol_scheme.at(item);
     }
@@ -202,8 +202,8 @@ const QVariantList Document::schemesObject() const
 
 QApiTransferProtocolSchemes Document::schemes() const
 {
-    dPvt();
-    return p._schemes;
+
+    return p->schemes;
 }
 
 Document &Document::schemes(const QVariant &newSchemes)
@@ -213,31 +213,29 @@ Document &Document::schemes(const QVariant &newSchemes)
 
 Document &Document::setSchemes(const QVariant &newSchemes)
 {
-    dPvt();
-
-    auto appendSchema = [&p](const QVariant &v) {
+    auto appendSchema = [this](const QVariant &v) {
         switch (qTypeId(v)) {
         case QMetaType_Int:
         case QMetaType_UInt:
         case QMetaType_LongLong:
         case QMetaType_ULongLong:
         case QMetaType_Double:
-            p._schemes = p._schemes | QApiTransferProtocolSchemes(v.toInt());
+            p->schemes = p->schemes | QApiTransferProtocolSchemes(v.toInt());
             break;
         default:
             const auto &schemesHash = qapiTransferProtocolSchemeHash();
             if (!schemesHash.contains(v.toString()))
                 break;
             auto scheme = schemesHash.value(v.toString());
-            p._schemes = p._schemes | scheme;
+            p->schemes = p->schemes | scheme;
         }
     };
 
     switch (qTypeId(newSchemes)) {
     case QMetaType_QStringList:
     case QMetaType_QVariantList: {
-        dPvt();
-        p._schemes = {};
+
+        p->schemes = {};
         for (auto &v : newSchemes.toList())
             appendSchema(v);
         break;
@@ -250,10 +248,10 @@ Document &Document::setSchemes(const QVariant &newSchemes)
 
 Document &Document::setSchemes(const QApiTransferProtocolSchemes &newSchemes)
 {
-    dPvt();
-    if (p._schemes == newSchemes)
+
+    if (p->schemes == newSchemes)
         return *this;
-    p._schemes = newSchemes;
+    p->schemes = newSchemes;
     emit schemesChanged();
     return *this;
 }
@@ -265,43 +263,43 @@ Document &Document::resetSchemes()
 
 Info &Document::info()
 {
-    dPvt();
-    return p._info;
+
+    return p->info;
 }
 
 const QVariantHash Document::infoObject() const
 {
-    dPvt();
-    return p._info.toVariant().toHash();
+
+    return p->info.toVariant().toHash();
 }
 
 Document &Document::setInfo(const QVariant &newInfo)
 {
-    dPvt();
-    p._info.load(newInfo);
+
+    p->info.load(newInfo);
     emit infoChanged();
     return *this;
 }
 
 Document &Document::setInfo(const Info &newInfo)
 {
-    dPvt();
-    p._info.load(newInfo.toVariant());
+
+    p->info.load(newInfo.toVariant());
     emit infoChanged();
     return *this;
 }
 
 Document &Document::resetInfo()
 {
-    dPvt();
-    p._info.clear();
+
+    p->info.clear();
     return *this;
 }
 
 QList<Tag *> &Document::tags() const
 {
-    dPvt();
-    return p._tags;
+
+    return p->tags;
 }
 
 Document &Document::tags(const QVariant &newTags)
@@ -326,37 +324,37 @@ Document &Document::tags(const QList<Tag *> &newTags)
 
 Document &Document::setTags(const QVariant &newTags)
 {
-    dPvt();
+
     auto item = new Tag(this);
     if (!item->load(newTags)) {
         delete item;
         return *this;
     }
-    p._tags << item;
+    p->tags << item;
     return *this;
 }
 
 const QVariantList Document::tagsObject() const
 {
-    dPvt();
+
     QVariantList __return;
-    for (auto &item : p._tags)
+    for (auto &item : p->tags)
         __return << item->toVariant();
     return __return;
 }
 
 Document &Document::setTags(const QVariantList &newTags)
 {
-    dPvt();
-    qDeleteAll(p._tags);
-    p._tags.clear();
+
+    qDeleteAll(p->tags);
+    p->tags.clear();
     for (auto &v : newTags) {
         auto item = new Tag(this);
         if (!item->load(v)) {
             delete item;
             continue;
         }
-        p._tags << item;
+        p->tags << item;
     }
     emit tagsChanged();
     return *this;
@@ -364,21 +362,21 @@ Document &Document::setTags(const QVariantList &newTags)
 
 Document &Document::setTags(Tag *newTags)
 {
-    dPvt();
+
     this->setParent(this);
-    p._tags << newTags;
+    p->tags << newTags;
     return *this;
 }
 
 Document &Document::setTags(const QList<Tag *> &newTags)
 {
-    dPvt();
-    auto aux = p._tags;
-    p._tags.clear();
+
+    auto aux = p->tags;
+    p->tags.clear();
     for (auto &item : newTags) {
         aux.removeOne(item);
         item->setParent(this);
-        p._tags << item;
+        p->tags << item;
     }
     qDeleteAll(aux);
     emit tagsChanged();
@@ -392,15 +390,15 @@ Document &Document::resetTags()
 
 const QVariantList &Document::consumes() const
 {
-    dPvt();
-    return p._consumes;
+
+    return p->consumes;
 }
 
 Document &Document::consumes(const QString &newConsume)
 {
-    dPvt();
-    if (!p._consumes.contains(newConsume)) {
-        p._consumes << newConsume;
+
+    if (!p->consumes.contains(newConsume)) {
+        p->consumes << newConsume;
         emit producesChanged();
     }
     return *this;
@@ -413,8 +411,8 @@ Document &Document::consumes(const QVariantList &newConsumes)
 
 Document &Document::setConsumes(const QVariantList &newConsumes)
 {
-    dPvt();
-    p._consumes = newConsumes;
+
+    p->consumes = newConsumes;
     emit consumesChanged();
     return *this;
 }
@@ -426,14 +424,14 @@ Document &Document::resetConsumes()
 
 const QVariantList &Document::produces() const
 {
-    dPvt();
-    return p._produces;
+
+    return p->produces;
 }
 
 Document &Document::produces(const QString &newProduce)
 {
-    dPvt();
-    p._produces << newProduce;
+
+    p->produces << newProduce;
     emit producesChanged();
     return *this;
 }
@@ -445,10 +443,10 @@ Document &Document::produces(const QVariantList &newProduces)
 
 Document &Document::setProduces(const QVariantList &newProduces)
 {
-    dPvt();
-    if (p._produces == newProduces)
+
+    if (p->produces == newProduces)
         return *this;
-    p._produces = newProduces;
+    p->produces = newProduces;
     emit producesChanged();
     return *this;
 }
@@ -460,28 +458,28 @@ Document &Document::resetProduces()
 
 const QVariantList Document::pathsObject() const
 {
-    dPvt();
+
     QVariantList __return;
-    for (auto &item : p._paths)
+    for (auto &item : p->paths)
         __return << item->toVariant();
     return __return;
 }
 
 QList<Path *> &Document::paths() const
 {
-    dPvt();
-    return p._paths;
+
+    return p->paths;
 }
 
 Document &Document::paths(const QVariant &newPath)
 {
-    dPvt();
+
     auto item = new Path(this);
     if (!item->load(newPath)) {
         delete item;
         return *this;
     }
-    p._paths << item;
+    p->paths << item;
     emit securityDefinitionsChanged();
     return *this;
 }
@@ -499,9 +497,9 @@ Document &Document::paths(Path *newPaths)
 
 Document &Document::setPaths(const QVariant &newPaths)
 {
-    dPvt();
-    qDeleteAll(p._paths);
-    p._paths.clear();
+
+    qDeleteAll(p->paths);
+    p->paths.clear();
     switch (qTypeId(newPaths)) {
     case QMetaType_QVariantList: {
         for (auto &v : newPaths.toList()) {
@@ -510,7 +508,7 @@ Document &Document::setPaths(const QVariant &newPaths)
                 delete item;
                 continue;
             }
-            p._paths << item;
+            p->paths << item;
         }
         emit pathsChanged();
         break;
@@ -527,7 +525,7 @@ Document &Document::setPaths(const QVariant &newPaths)
                 continue;
             }
             item->setUri(i.key());
-            p._paths << item;
+            p->paths << item;
         }
         emit pathsChanged();
         break;
@@ -541,10 +539,10 @@ Document &Document::setPaths(const QVariant &newPaths)
 
 Document &Document::setPaths(Path *&newPaths)
 {
-    dPvt();
+
     newPaths->setParent(this);
-    if (!p._paths.contains(newPaths)) {
-        p._paths << newPaths;
+    if (!p->paths.contains(newPaths)) {
+        p->paths << newPaths;
         emit pathsChanged();
     }
     return *this;
@@ -552,13 +550,13 @@ Document &Document::setPaths(Path *&newPaths)
 
 Document &Document::setPaths(const QList<Path *> &newPaths)
 {
-    dPvt();
-    auto aux = p._paths;
-    p._paths.clear();
+
+    auto aux = p->paths;
+    p->paths.clear();
     for (auto &item : newPaths) {
         aux.removeOne(item);
         item->setParent(this);
-        p._paths << item;
+        p->paths << item;
     }
     qDeleteAll(aux);
     emit pathsChanged();
@@ -572,28 +570,28 @@ Document &Document::resetPaths()
 
 const QVariantList Document::definitionsObject() const
 {
-    dPvt();
+
     QVariantList __return;
-    for (auto &v : p._definitions)
+    for (auto &v : p->definitions)
         __return << v->toVariant();
     return __return;
 }
 
 QList<Definition *> &Document::definitions() const
 {
-    dPvt();
-    return p._definitions;
+
+    return p->definitions;
 }
 
 Document &Document::definitions(const QVariant &newDefinition)
 {
-    dPvt();
+
     auto item = new Definition(this);
     if (!item->load(newDefinition)) {
         delete item;
         return *this;
     }
-    p._definitions << item;
+    p->definitions << item;
     emit securityDefinitionsChanged();
     return *this;
 }
@@ -616,9 +614,9 @@ Document &Document::definitions(const QList<Definition *> &newDefinitions)
 
 Document &Document::setDefinitions(const QVariant &newDefinitions)
 {
-    dPvt();
-    qDeleteAll(p._paths);
-    p._paths.clear();
+
+    qDeleteAll(p->paths);
+    p->paths.clear();
     switch (qTypeId(newDefinitions)) {
     case QMetaType_QVariantList: {
         for (auto &v : newDefinitions.toList()) {
@@ -627,7 +625,7 @@ Document &Document::setDefinitions(const QVariant &newDefinitions)
                 delete item;
                 continue;
             }
-            p._definitions << item;
+            p->definitions << item;
         }
         emit definitionsChanged();
         break;
@@ -639,7 +637,7 @@ Document &Document::setDefinitions(const QVariant &newDefinitions)
             i.next();
             auto item = new Definition(this);
             item->setName(i.key()).setSchema(i.value().toHash());
-            p._definitions << item;
+            p->definitions << item;
         }
         emit definitionsChanged();
         break;
@@ -652,21 +650,21 @@ Document &Document::setDefinitions(const QVariant &newDefinitions)
 
 Document &Document::setDefinitions(Definition *newDefinitions)
 {
-    dPvt();
+
     newDefinitions->setParent(this);
-    p._definitions << newDefinitions;
+    p->definitions << newDefinitions;
     return *this;
 }
 
 Document &Document::setDefinitions(const QList<Definition *> &newDefinitions)
 {
-    dPvt();
-    auto aux = p._definitions;
-    p._definitions.clear();
+
+    auto aux = p->definitions;
+    p->definitions.clear();
     for (auto &item : newDefinitions) {
         aux.removeOne(item);
         item->setParent(this);
-        p._definitions << item;
+        p->definitions << item;
     }
     qDeleteAll(aux);
     emit definitionsChanged();
@@ -680,28 +678,28 @@ Document &Document::resetDefinitions()
 
 const QVariantList Document::securityDefinitionsObject() const
 {
-    dPvt();
+
     QVariantList __return;
-    for (auto &v : p._securityDefinitions)
+    for (auto &v : p->securityDefinitions)
         __return << v->toVariant();
     return __return;
 }
 
 QList<SecurityDefinition *> &Document::securityDefinitions()
 {
-    dPvt();
-    return p._securityDefinitions;
+
+    return p->securityDefinitions;
 }
 
 Document &Document::securityDefinitions(const QVariant &newSecurityDefinition)
 {
-    dPvt();
+
     auto item = new SecurityDefinition(this);
     if (!item->load(newSecurityDefinition)) {
         delete item;
         return *this;
     }
-    p._securityDefinitions << item;
+    p->securityDefinitions << item;
     emit securityDefinitionsChanged();
     return *this;
 }
@@ -720,9 +718,9 @@ Document &Document::securityDefinitions(const QList<SecurityDefinition *> &newSe
 
 Document &Document::setSecurityDefinitions(const QVariant &newSecurityDefinitions)
 {
-    dPvt();
-    qDeleteAll(p._securityDefinitions);
-    p._securityDefinitions.clear();
+
+    qDeleteAll(p->securityDefinitions);
+    p->securityDefinitions.clear();
 
     switch (qTypeId(newSecurityDefinitions)) {
     case QMetaType_QVariantList: {
@@ -732,7 +730,7 @@ Document &Document::setSecurityDefinitions(const QVariant &newSecurityDefinition
                 delete item;
                 continue;
             }
-            p._securityDefinitions << item;
+            p->securityDefinitions << item;
         }
         emit securityDefinitionsChanged();
         break;
@@ -747,7 +745,7 @@ Document &Document::setSecurityDefinitions(const QVariant &newSecurityDefinition
                 delete item;
                 continue;
             }
-            p._securityDefinitions << item;
+            p->securityDefinitions << item;
         }
         emit securityDefinitionsChanged();
         break;
@@ -760,13 +758,13 @@ Document &Document::setSecurityDefinitions(const QVariant &newSecurityDefinition
 
 Document &Document::setSecurityDefinitions(const QList<SecurityDefinition *> &newSecurityDefinitions)
 {
-    dPvt();
-    auto aux = p._securityDefinitions;
-    p._securityDefinitions.clear();
+
+    auto aux = p->securityDefinitions;
+    p->securityDefinitions.clear();
     for (auto &item : newSecurityDefinitions) {
         aux.removeOne(item);
         item->setParent(this);
-        p._securityDefinitions << item;
+        p->securityDefinitions << item;
     }
     qDeleteAll(aux);
     emit securityDefinitionsChanged();
@@ -809,28 +807,28 @@ Document &Document::resetSecurityDefinitions()
 
 const QVariantList Document::parametersObject() const
 {
-    dPvt();
+
     QVariantList __return;
-    for (auto &v : p._parameters)
+    for (auto &v : p->parameters)
         __return << v->toVariant();
     return __return;
 }
 
 QList<Parameter *> &Document::parameters() const
 {
-    dPvt();
-    return p._parameters;
+
+    return p->parameters;
 }
 
 Document &Document::parameters(const QVariant &newParameter)
 {
-    dPvt();
+
     auto item = new Parameter(this);
     if (!item->load(newParameter)) {
         delete item;
         return *this;
     }
-    p._parameters << item;
+    p->parameters << item;
     emit parametersChanged();
     return *this;
 }
@@ -848,9 +846,9 @@ Document &Document::parameters(const QList<Parameter *> &newParameters)
 
 Document &Document::setParameters(const QVariantList &newParameters)
 {
-    dPvt();
-    qDeleteAll(p._parameters);
-    p._parameters.clear();
+
+    qDeleteAll(p->parameters);
+    p->parameters.clear();
     for (auto &v : newParameters)
         this->parameters(v);
     return *this;
@@ -858,13 +856,13 @@ Document &Document::setParameters(const QVariantList &newParameters)
 
 Document &Document::setParameters(const QList<Parameter *> &newParameters)
 {
-    dPvt();
-    auto aux = p._parameters;
-    p._parameters.clear();
+
+    auto aux = p->parameters;
+    p->parameters.clear();
     for (auto &item : newParameters) {
         aux.removeOne(item);
         this->setParent(this);
-        p._parameters << item;
+        p->parameters << item;
     }
     qDeleteAll(aux);
     emit parametersChanged();
@@ -878,14 +876,14 @@ Document &Document::resetParameters()
 
 DocumentExternal &Document::externalDocs()
 {
-    dPvt();
-    return p._externalDocs;
+
+    return p->externalDocs;
 }
 
 const QVariantHash Document::externalDocsObject() const
 {
-    dPvt();
-    return p._externalDocs.toVariant().toHash();
+
+    return p->externalDocs.toVariant().toHash();
 }
 
 Document &Document::externalDocs(const QVariant &newExternalDocs)
@@ -895,24 +893,24 @@ Document &Document::externalDocs(const QVariant &newExternalDocs)
 
 Document &Document::setExternalDocs(const QVariant &newExternalDocs)
 {
-    dPvt();
-    p._externalDocs.load(newExternalDocs);
+
+    p->externalDocs.load(newExternalDocs);
     emit externalDocsChanged();
     return *this;
 }
 
 Document &Document::setExternalDocs(const DocumentExternal &newExternalDocs)
 {
-    dPvt();
-    p._externalDocs.load(newExternalDocs.toVariant());
+
+    p->externalDocs.load(newExternalDocs.toVariant());
     emit externalDocsChanged();
     return *this;
 }
 
 Document &Document::resetExternalDocs()
 {
-    dPvt();
-    p._externalDocs.clear();
+
+    p->externalDocs.clear();
     return *this;
 }
 
