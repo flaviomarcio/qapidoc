@@ -59,25 +59,25 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMetaTypeUtil,
 
 QMetaTypeUtil::QMetaTypeUtil(const QVector<int> &list) : QVector<int>{list} {}
 
-QMetaTypeUtil::~QMetaTypeUtil() {}
+//QMetaTypeUtil::~QMetaTypeUtil() {}
 
-int QMetaTypeUtil::qTypeId(const QVariant &v)
-{
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    return v.typeId();
-#else
-    return v.type();
-#endif
-}
+//int QMetaTypeUtil::qTypeId(const QVariant &v)
+//{
+//#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+//    return v.typeId();
+//#else
+//    return v.type();
+//#endif
+//}
 
-int QMetaTypeUtil::qTypeId(const QMetaProperty &v)
-{
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    return v.typeId();
-#else
-    return v.type();
-#endif
-}
+//int QMetaTypeUtil::qTypeId(const QMetaProperty &v)
+//{
+//#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+//    return v.typeId();
+//#else
+//    return v.type();
+//#endif
+//}
 
 bool QMetaTypeUtil::qIsNumeric(const QVariant &v)
 {
@@ -87,11 +87,11 @@ bool QMetaTypeUtil::qIsNumeric(const QVariant &v)
     auto __qtype = v.type();
 #endif
     switch (__qtype) {
-    case QMetaType_LongLong:
-    case QMetaType_Int:
-    case QMetaType_UInt:
-    case QMetaType_ULongLong:
-    case QMetaType_Double:
+    case QMetaType::LongLong:
+    case QMetaType::Int:
+    case QMetaType::UInt:
+    case QMetaType::ULongLong:
+    case QMetaType::Double:
         return true;
     default:
         if (v.toDouble() > 0)
@@ -151,16 +151,6 @@ const QMetaTypeUtil &QMetaTypeUtil::qMetaTypeUtilVariantList()
 const QMetaTypeUtil &QMetaTypeUtil::qMetaTypeUtilObjectMetaData()
 {
     return *staticQMetaTypeUtilObjectMetaData;
-}
-
-int qTypeId(const QVariant &v)
-{
-    return QApiDoc::QMetaTypeUtil::qTypeId(v);
-}
-
-int qTypeId(const QMetaProperty &p)
-{
-    return QApiDoc::QMetaTypeUtil::qTypeId(p);
 }
 
 bool qIsNumeric(const QVariant &v)

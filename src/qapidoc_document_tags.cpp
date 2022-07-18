@@ -2,15 +2,13 @@
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<TagPvt *>(this->p)
-
 class TagPvt
 {
 public:
     Tag *parent = nullptr;
-    DocumentExternal _externalDocs;
-    QString _description;
-    QString _name;
+    DocumentExternal externalDocs;
+    QString description;
+    QString name;
 
     explicit TagPvt(Tag *parent) { this->parent = parent; }
 
@@ -24,14 +22,13 @@ Tag::Tag(QObject *parent) : ObjectMapper{parent}
 
 Tag::~Tag()
 {
-    dPvt();
-    delete &p;
+    delete p;
 }
 
 const QString &Tag::description() const
 {
-    dPvt();
-    return p._description;
+
+    return p->description;
 }
 
 Tag &Tag::description(const QString &newDescription)
@@ -41,10 +38,10 @@ Tag &Tag::description(const QString &newDescription)
 
 Tag &Tag::setDescription(const QString &newDescription)
 {
-    dPvt();
-    if (p._description == newDescription)
+
+    if (p->description == newDescription)
         return *this;
-    p._description = newDescription;
+    p->description = newDescription;
     emit descriptionChanged();
     return *this;
 }
@@ -56,14 +53,14 @@ Tag &Tag::resetDescription()
 
 const DocumentExternal &Tag::externalDocs() const
 {
-    dPvt();
-    return p._externalDocs;
+
+    return p->externalDocs;
 }
 
 QVariantHash Tag::externalDocsObject() const
 {
-    dPvt();
-    return p._externalDocs.toVariant().toHash();
+
+    return p->externalDocs.toVariant().toHash();
 }
 
 Tag &Tag::externalDocs(const QVariant &newExternalDocs)
@@ -73,16 +70,16 @@ Tag &Tag::externalDocs(const QVariant &newExternalDocs)
 
 Tag &Tag::setExternalDocs(const QVariant &newExternalDocs)
 {
-    dPvt();
-    p._externalDocs.load(newExternalDocs);
+
+    p->externalDocs.load(newExternalDocs);
     emit externalDocsChanged();
     return *this;
 }
 
 Tag &Tag::setExternalDocs(const DocumentExternal &newExternalDocs)
 {
-    dPvt();
-    p._externalDocs.load(newExternalDocs.toVariant());
+
+    p->externalDocs.load(newExternalDocs.toVariant());
     emit externalDocsChanged();
     return *this;
 }
@@ -94,8 +91,8 @@ Tag &Tag::resetExternalDocs()
 
 const QString &Tag::name() const
 {
-    dPvt();
-    return p._name;
+
+    return p->name;
 }
 
 Tag &Tag::name(const QString &newName)
@@ -105,10 +102,10 @@ Tag &Tag::name(const QString &newName)
 
 Tag &Tag::setName(const QString &newName)
 {
-    dPvt();
-    if (p._name == newName)
+
+    if (p->name == newName)
         return *this;
-    p._name = newName;
+    p->name = newName;
     emit nameChanged();
     return *this;
 }

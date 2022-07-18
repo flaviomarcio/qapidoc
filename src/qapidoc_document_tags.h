@@ -1,10 +1,11 @@
 #pragma once
 
 #include "./qapidoc_document_external.h"
-#include "./qapidoc_includes.h"
+//#include "./qapidoc_includes.h"
 
 namespace QApiDoc {
 
+class TagPvt;
 class Q_API_DOC_EXPORT Tag : public ObjectMapper
 {
     Q_OBJECT
@@ -54,7 +55,7 @@ public:
     Tag &resetExternalDocs();
 
 private:
-    void *p = nullptr;
+    TagPvt *p = nullptr;
 
     const QString qapi_TagDescription = QStringLiteral("description");
     const QString qapi_TagExternalDocs = QStringLiteral("externalDocs");

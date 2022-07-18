@@ -1,6 +1,6 @@
 #include "./qapidoc_document_security_definition_oauth2.h"
 #include "./qapidoc_document_security_definition_oauth2_scope.h"
-#include "./qapidoc_meta_types.h"
+//#include "./qapidoc_meta_types.h"
 
 namespace QApiDoc {
 
@@ -61,23 +61,23 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setScopes(const QVariant &ne
 {
     dPvt();
     QVariantList vList;
-    switch (qTypeId(newScopes)) {
-    case QMetaType_QVariantList:
-    case QMetaType_QStringList: {
+    switch (newScopes.typeId()) {
+    case QMetaType::QVariantList:
+    case QMetaType::QStringList: {
         qDeleteAll(p._scopes);
         p._scopes.clear();
         vList = newScopes.toList();
         break;
     }
-    case QMetaType_QVariantHash:
-    case QMetaType_QVariantMap: {
+    case QMetaType::QVariantHash:
+    case QMetaType::QVariantMap: {
         qDeleteAll(p._scopes);
         p._scopes.clear();
         vList = newScopes.toHash().values();
         break;
     }
     default:
-        vList << newScopes;
+        vList.append(newScopes);
     }
 
     for (auto &v : vList) {
@@ -86,7 +86,7 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setScopes(const QVariant &ne
             delete item;
             continue;
         }
-        p._scopes << item;
+        p._scopes.append(item);
     }
     emit scopesChanged();
     return *this;
@@ -101,7 +101,7 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setScopes(
     for (auto &item : newScopes) {
         aux.removeOne(item);
         item->setParent(this);
-        p._scopes << item;
+        p._scopes.append(item);
     }
     qDeleteAll(aux);
     emit scopesChanged();

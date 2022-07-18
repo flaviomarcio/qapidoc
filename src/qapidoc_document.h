@@ -8,7 +8,6 @@
 #include "./qapidoc_document_path_operation_parameter.h"
 #include "./qapidoc_document_security_definition.h"
 #include "./qapidoc_document_tags.h"
-#include "./qapidoc_includes.h"
 
 namespace QApiDoc {
 class DocumentPvt;

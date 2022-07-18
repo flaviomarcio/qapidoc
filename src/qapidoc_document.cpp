@@ -1,6 +1,5 @@
 #include "./qapidoc_document.h"
 #include "./qapidoc.h"
-#include "./qapidoc_meta_types.h"
 #include "./qapidoc_types.h"
 #include <QDir>
 #include <QStringList>
@@ -138,9 +137,9 @@ Document &Document::setBasePath(const QVariant &newBasePath)
 
     if (p->basePath == newBasePath.toStringList())
         return *this;
-    switch (qTypeId(newBasePath)) {
-        case QMetaType_QStringList:
-        case QMetaType_QVariantList:
+    switch (newBasePath.typeId()) {
+        case QMetaType::QStringList:
+        case QMetaType::QVariantList:
         {
             for(auto &v:newBasePath.toList()){
                 auto path=v.toString().trimmed().toLower();
@@ -202,7 +201,6 @@ const QVariantList Document::schemesObject() const
 
 QApiTransferProtocolSchemes Document::schemes() const
 {
-
     return p->schemes;
 }
 
@@ -214,12 +212,12 @@ Document &Document::schemes(const QVariant &newSchemes)
 Document &Document::setSchemes(const QVariant &newSchemes)
 {
     auto appendSchema = [this](const QVariant &v) {
-        switch (qTypeId(v)) {
-        case QMetaType_Int:
-        case QMetaType_UInt:
-        case QMetaType_LongLong:
-        case QMetaType_ULongLong:
-        case QMetaType_Double:
+        switch (v.typeId()) {
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
+        case QMetaType::Double:
             p->schemes = p->schemes | QApiTransferProtocolSchemes(v.toInt());
             break;
         default:
@@ -231,10 +229,9 @@ Document &Document::setSchemes(const QVariant &newSchemes)
         }
     };
 
-    switch (qTypeId(newSchemes)) {
-    case QMetaType_QStringList:
-    case QMetaType_QVariantList: {
-
+    switch (newSchemes.typeId()) {
+    case QMetaType::QStringList:
+    case QMetaType::QVariantList: {
         p->schemes = {};
         for (auto &v : newSchemes.toList())
             appendSchema(v);
@@ -500,21 +497,21 @@ Document &Document::setPaths(const QVariant &newPaths)
 
     qDeleteAll(p->paths);
     p->paths.clear();
-    switch (qTypeId(newPaths)) {
-    case QMetaType_QVariantList: {
+    switch (newPaths.typeId()) {
+    case QMetaType::QVariantList: {
         for (auto &v : newPaths.toList()) {
             auto item = new Path(this);
             if (!item->load(v)) {
                 delete item;
                 continue;
             }
-            p->paths << item;
+            p->paths.append(item);
         }
         emit pathsChanged();
         break;
     }
-    case QMetaType_QVariantHash:
-    case QMetaType_QVariantMap: {
+    case QMetaType::QVariantHash:
+    case QMetaType::QVariantMap: {
         QHashIterator<QString, QVariant> i(newPaths.toHash());
         while (i.hasNext()) {
             i.next();
@@ -525,7 +522,7 @@ Document &Document::setPaths(const QVariant &newPaths)
                 continue;
             }
             item->setUri(i.key());
-            p->paths << item;
+            p->paths.append(item);
         }
         emit pathsChanged();
         break;
@@ -617,8 +614,8 @@ Document &Document::setDefinitions(const QVariant &newDefinitions)
 
     qDeleteAll(p->paths);
     p->paths.clear();
-    switch (qTypeId(newDefinitions)) {
-    case QMetaType_QVariantList: {
+    switch (newDefinitions.typeId()) {
+    case QMetaType::QVariantList: {
         for (auto &v : newDefinitions.toList()) {
             auto item = new Definition(this);
             if (!item->load(v)) {
@@ -630,8 +627,8 @@ Document &Document::setDefinitions(const QVariant &newDefinitions)
         emit definitionsChanged();
         break;
     }
-    case QMetaType_QVariantHash:
-    case QMetaType_QVariantMap: {
+    case QMetaType::QVariantHash:
+    case QMetaType::QVariantMap: {
         QHashIterator<QString, QVariant> i(newDefinitions.toHash());
         while (i.hasNext()) {
             i.next();
@@ -722,8 +719,8 @@ Document &Document::setSecurityDefinitions(const QVariant &newSecurityDefinition
     qDeleteAll(p->securityDefinitions);
     p->securityDefinitions.clear();
 
-    switch (qTypeId(newSecurityDefinitions)) {
-    case QMetaType_QVariantList: {
+    switch (newSecurityDefinitions.typeId()) {
+    case QMetaType::QVariantList: {
         for (auto &v : newSecurityDefinitions.toList()) {
             auto item = new SecurityDefinition(this);
             if (!item->load(v)) {
@@ -735,8 +732,8 @@ Document &Document::setSecurityDefinitions(const QVariant &newSecurityDefinition
         emit securityDefinitionsChanged();
         break;
     }
-    case QMetaType_QVariantHash:
-    case QMetaType_QVariantMap: {
+    case QMetaType::QVariantHash:
+    case QMetaType::QVariantMap: {
         QHashIterator<QString, QVariant> i(newSecurityDefinitions.toHash());
         while (i.hasNext()) {
             i.next();

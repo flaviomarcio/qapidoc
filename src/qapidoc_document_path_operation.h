@@ -4,10 +4,10 @@
 #include "./qapidoc_document_path_operation_parameter.h"
 #include "./qapidoc_document_path_operation_response.h"
 #include "./qapidoc_document_tags.h"
-#include "./qapidoc_includes.h"
+//#include "./qapidoc_includes.h"
 
 namespace QApiDoc {
-
+class PathOperationPvt;
 //!
 //! \brief The PathOperation class
 //!
@@ -233,7 +233,7 @@ signals:
     void externalDocsChanged();
 
 private:
-    void *p = nullptr;
+    PathOperationPvt *p = nullptr;
 };
 
 } // namespace QApiDoc

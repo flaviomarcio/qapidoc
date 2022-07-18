@@ -9,7 +9,7 @@ namespace QApiDoc {
 
 static bool writeProperty(QObject *object, const QMetaProperty &property, const QVariant &value)
 {
-    auto type = qTypeId(property);
+    auto type = property.typeId();
     QVariant vValue = value;
 
     if (property.write(object, vValue))
@@ -17,33 +17,33 @@ static bool writeProperty(QObject *object, const QMetaProperty &property, const 
 
     if (QMetaTypeUtilMetaString.contains(type)) {
         QVariant v;
-        if (QMetaTypeUtilObjects.contains(qTypeId(value)))
+        if (QMetaTypeUtilObjects.contains(value.typeId()))
             v = QJsonDocument::fromVariant(vValue).toJson(QJsonDocument::Compact);
         else
             v = vValue.toByteArray();
 
         switch (type) {
-        case QMetaType_QUuid:
+        case QMetaType::QUuid:
             if (property.write(object, vValue.toUuid()))
                 return true;
             break;
-        case QMetaType_QUrl:
+        case QMetaType::QUrl:
             if (property.write(object, vValue.toUrl()))
                 return true;
             break;
-        case QMetaType_QString:
+        case QMetaType::QString:
             if (property.write(object, v.toString()))
                 return true;
             break;
-        case QMetaType_QByteArray:
+        case QMetaType::QByteArray:
             if (property.write(object, v.toByteArray()))
                 return true;
             break;
-        case QMetaType_QChar:
+        case QMetaType::QChar:
             if (property.write(object, v.toChar()))
                 return true;
             break;
-        case QMetaType_QBitArray:
+        case QMetaType::QBitArray:
             if (property.write(object, v.toBitArray()))
                 return true;
             break;
@@ -55,16 +55,16 @@ static bool writeProperty(QObject *object, const QMetaProperty &property, const 
     if (QMetaTypeUtilIntegers.contains(type)) { //ints
 
         switch (type) {
-        case QMetaType_LongLong:
-        case QMetaType_ULongLong:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
             if (property.write(object,
                                static_cast<qlonglong>(QLocale::c().toDouble(vValue.toString()))))
                 return true;
             if (property.write(object, QLocale::c().toLongLong(vValue.toString())))
                 return true;
             break;
-        case QMetaType_Int:
-        case QMetaType_UInt:
+        case QMetaType::Int:
+        case QMetaType::UInt:
             if (property.write(object, QLocale::c().toInt(vValue.toString())))
                 return true;
             if (property.write(object, QLocale::c().toInt(vValue.toString())))
@@ -72,7 +72,7 @@ static bool writeProperty(QObject *object, const QMetaProperty &property, const 
             if (property.write(object, QLocale::c().toUInt(vValue.toString())))
                 return true;
             break;
-        case QMetaType_Double:
+        case QMetaType::Double:
             if (property.write(object, QLocale::c().toDouble(vValue.toString())))
                 return true;
             break;
@@ -83,19 +83,19 @@ static bool writeProperty(QObject *object, const QMetaProperty &property, const 
 
     if (QMetaTypeUtilObjects.contains(type)) {
         switch (type) {
-        case QMetaType_QVariantMap:
+        case QMetaType::QVariantMap:
             if (property.write(object, vValue.toHash()))
                 return true;
             break;
-        case QMetaType_QVariantHash:
+        case QMetaType::QVariantHash:
             if (property.write(object, vValue.toHash()))
                 return true;
             break;
-        case QMetaType_QVariantList:
+        case QMetaType::QVariantList:
             if (property.write(object, vValue.toList()))
                 return true;
             break;
-        case QMetaType_QStringList:
+        case QMetaType::QStringList:
             if (property.write(object, vValue.toStringList()))
                 return true;
             break;
@@ -106,15 +106,15 @@ static bool writeProperty(QObject *object, const QMetaProperty &property, const 
 
     if (QMetaTypeUtilDates.contains(type)) {
         switch (type) {
-        case QMetaType_QDate:
+        case QMetaType::QDate:
             if (property.write(object, vValue.toDate()))
                 return true;
             break;
-        case QMetaType_QDateTime:
+        case QMetaType::QDateTime:
             if (property.write(object, vValue.toDateTime()))
                 return true;
             break;
-        case QMetaType_QTime:
+        case QMetaType::QTime:
             if (property.write(object, vValue.toTime()))
                 return true;
             break;
@@ -123,9 +123,9 @@ static bool writeProperty(QObject *object, const QMetaProperty &property, const 
         }
     }
 
-    if (QMetaTypeUtilBool.contains(type) || QMetaTypeUtilBool.contains(qTypeId(value))) {
+    if (QMetaTypeUtilBool.contains(type) || QMetaTypeUtilBool.contains(value.typeId())) {
         switch (type) {
-        case QMetaType_Bool:
+        case QMetaType::Bool:
             if (property.write(object, vValue.toBool()))
                 return true;
             break;
@@ -133,22 +133,22 @@ static bool writeProperty(QObject *object, const QMetaProperty &property, const 
             break;
         }
 
-        switch (qTypeId(vValue)) {
-        case QMetaType_Bool:
+        switch (vValue.typeId()) {
+        case QMetaType::Bool:
             if (property.write(object, vValue.toBool()))
                 return true;
             break;
-        case QMetaType_Int:
-        case QMetaType_UInt:
-        case QMetaType_ULongLong:
-        case QMetaType_LongLong:
-        case QMetaType_Double:
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::ULongLong:
+        case QMetaType::LongLong:
+        case QMetaType::Double:
             if (property.write(object, (vValue.toInt() == 1)))
                 return true;
             break;
-        case QMetaType_QString:
-        case QMetaType_QByteArray:
-        case QMetaType_QChar: {
+        case QMetaType::QString:
+        case QMetaType::QByteArray:
+        case QMetaType::QChar: {
             auto vv = vValue.toString().toLower();
             bool vBool = (vv == QStringLiteral("true"));
             if (property.write(object, vBool))
@@ -200,50 +200,50 @@ QVariant ObjectMapper::toVariant() const
         if (value.isNull() || !value.isValid())
             continue;
 
-        switch (qTypeId(property)) {
-        case QMetaType_Double:
-        case QMetaType_Int:
-        case QMetaType_UInt:
-        case QMetaType_LongLong:
-        case QMetaType_ULongLong:
-        case QMetaType_User:
+        switch (property.typeId()) {
+        case QMetaType::Double:
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
+        case QMetaType::User:
             if (value.toDouble() == 0)
                 continue;
             break;
-        case QMetaType_QUuid:
+        case QMetaType::QUuid:
             if (value.toUuid().isNull())
                 continue;
             break;
-        case QMetaType_QUrl:
+        case QMetaType::QUrl:
             if (value.toUrl().isEmpty())
                 continue;
             break;
-        case QMetaType_QDate:
+        case QMetaType::QDate:
             if (!value.toDate().isValid())
                 continue;
             break;
-        case QMetaType_QTime:
+        case QMetaType::QTime:
             if (!value.toTime().isValid())
                 continue;
             break;
-        case QMetaType_QDateTime:
+        case QMetaType::QDateTime:
             if (!value.toDateTime().isValid())
                 continue;
             break;
-        case QMetaType_QString:
-        case QMetaType_QByteArray:
-        case QMetaType_QChar:
-        case QMetaType_QBitArray:
+        case QMetaType::QString:
+        case QMetaType::QByteArray:
+        case QMetaType::QChar:
+        case QMetaType::QBitArray:
             if (value.toByteArray().trimmed().isEmpty())
                 continue;
             break;
-        case QMetaType_QVariantMap:
-        case QMetaType_QVariantHash:
+        case QMetaType::QVariantMap:
+        case QMetaType::QVariantHash:
             if (value.toHash().isEmpty())
                 continue;
             break;
-        case QMetaType_QVariantList:
-        case QMetaType_QStringList:
+        case QMetaType::QVariantList:
+        case QMetaType::QStringList:
             if (value.toList().isEmpty())
                 continue;
             break;
@@ -280,54 +280,54 @@ ObjectMapper &ObjectMapper::clear()
         if (object_ignore_methods.contains(property.name()))
             continue;
 
-        switch (qTypeId(property)) {
-        case QMetaType_User:
+        switch (property.typeId()) {
+        case QMetaType::User:
             property.write(this, 0);
             continue;
-        case QMetaType_QUuid:
-            property.write(this, QUuid());
+        case QMetaType::QUuid:
+            property.write(this, QUuid{});
             continue;
-        case QMetaType_QUrl:
+        case QMetaType::QUrl:
             property.write(this, QUrl());
             continue;
-        case QMetaType_QDate:
+        case QMetaType::QDate:
             property.write(this, QDate());
             continue;
-        case QMetaType_QTime:
+        case QMetaType::QTime:
             property.write(this, QTime());
             continue;
-        case QMetaType_QDateTime:
+        case QMetaType::QDateTime:
             property.write(this, QDateTime());
             continue;
-        case QMetaType_Double:
-        case QMetaType_Int:
-        case QMetaType_UInt:
-        case QMetaType_LongLong:
-        case QMetaType_ULongLong:
+        case QMetaType::Double:
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
             property.write(this, 0);
             continue;
-        case QMetaType_QString:
+        case QMetaType::QString:
             property.write(this, QString{});
             continue;
-        case QMetaType_QByteArray:
+        case QMetaType::QByteArray:
             property.write(this, QByteArray{});
             continue;
-        case QMetaType_QChar:
+        case QMetaType::QChar:
             property.write(this, QChar());
             continue;
-        case QMetaType_QBitArray:
+        case QMetaType::QBitArray:
             property.write(this, QBitArray());
             continue;
-        case QMetaType_QVariantMap:
+        case QMetaType::QVariantMap:
             property.write(this, QVariantMap());
             continue;
-        case QMetaType_QVariantHash:
+        case QMetaType::QVariantHash:
             property.write(this, QVariantHash());
             continue;
-        case QMetaType_QVariantList:
+        case QMetaType::QVariantList:
             property.write(this, QVariantList());
             continue;
-        case QMetaType_QStringList:
+        case QMetaType::QStringList:
             property.write(this, QStringList());
             continue;
         default:
@@ -351,19 +351,19 @@ bool ObjectMapper::read(const QVariant &value)
 {
     const auto &object_ignore_methods = QApiDoc::object_ignore_methods();
     QVariantHash vHash;
-    switch (qTypeId(value)) {
-    case QMetaType_QVariantList:
-    case QMetaType_QStringList: {
+    switch (value.typeId()) {
+    case QMetaType::QVariantList:
+    case QMetaType::QStringList: {
         auto vList = value.toList();
         return this->read(vList.isEmpty() ? QVariantHash{} : vList.first());
     }
-    case QMetaType_QVariantHash:
-    case QMetaType_QVariantMap: {
+    case QMetaType::QVariantHash:
+    case QMetaType::QVariantMap: {
         vHash = value.toHash();
         break;
     }
-    case QMetaType_QString:
-    case QMetaType_QByteArray: {
+    case QMetaType::QString:
+    case QMetaType::QByteArray: {
         QFile file(value.toString());
         if (file.exists()) {
             if (!file.open(file.ReadOnly)) {
