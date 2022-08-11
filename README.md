@@ -101,7 +101,7 @@
 >    }
 >
 >public:
->    explicit PersonCrud(QObject*parent=nullptr);
+>    explicit PersonCrud(QObject *parent=nullptr);
 >
 >    Q_API_DOC_PATH(search){
 >        path->
