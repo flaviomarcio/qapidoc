@@ -280,24 +280,29 @@ ObjectMapper &ObjectMapper::clear()
         if (object_ignore_methods.contains(property.name()))
             continue;
 
+        if(property.isResettable()){
+            property.reset(this);
+            continue;
+        }
+
         switch (property.typeId()) {
         case QMetaType::User:
             property.write(this, 0);
             continue;
         case QMetaType::QUuid:
-            property.write(this, QUuid{});
+            property.write(this, {});
             continue;
         case QMetaType::QUrl:
-            property.write(this, QUrl());
+            property.write(this, {});
             continue;
         case QMetaType::QDate:
-            property.write(this, QDate());
+            property.write(this, {});
             continue;
         case QMetaType::QTime:
-            property.write(this, QTime());
+            property.write(this, {});
             continue;
         case QMetaType::QDateTime:
-            property.write(this, QDateTime());
+            property.write(this, {});
             continue;
         case QMetaType::Double:
         case QMetaType::Int:
@@ -307,31 +312,31 @@ ObjectMapper &ObjectMapper::clear()
             property.write(this, 0);
             continue;
         case QMetaType::QString:
-            property.write(this, QString{});
+            property.write(this, {});
             continue;
         case QMetaType::QByteArray:
-            property.write(this, QByteArray{});
+            property.write(this, {});
             continue;
         case QMetaType::QChar:
-            property.write(this, QChar());
+            property.write(this, {});
             continue;
         case QMetaType::QBitArray:
-            property.write(this, QBitArray());
+            property.write(this, {});
             continue;
         case QMetaType::QVariantMap:
-            property.write(this, QVariantMap());
+            property.write(this, {});
             continue;
         case QMetaType::QVariantHash:
-            property.write(this, QVariantHash());
+            property.write(this, {});
             continue;
         case QMetaType::QVariantList:
-            property.write(this, QVariantList());
+            property.write(this, {});
             continue;
         case QMetaType::QStringList:
-            property.write(this, QStringList());
+            property.write(this, {});
             continue;
         default:
-            property.write(this, QVariant());
+            property.write(this, {});
         }
     }
     return *this;
