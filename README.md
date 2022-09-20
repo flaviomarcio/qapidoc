@@ -53,9 +53,9 @@
 ## Configure QMake project
 
 >```c++
->CONFIG += c++17
->CONFIG += console
->CONFIG += silent
+>CONFIG+=c++17
+>CONFIG+=console
+>CONFIG+=silent
 >CONFIG -= debug_and_release
 >QT += gui core widgets
 >
