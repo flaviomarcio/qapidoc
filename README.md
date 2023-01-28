@@ -152,7 +152,7 @@
 >    QCoreApplication a(argc, argv);
 >    
 >    //documented class 
->    NotationExample::PersonCrud personCrud;
+>    AnnotationExample::PersonCrud personCrud;
 >
 >    //export to QVariantHash
 >    auto documentation=personCrud.documentation().toHash();
