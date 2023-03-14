@@ -1,6 +1,5 @@
 #pragma once
 
-#include "./qapidoc_global.h"
 #include <QBitArray>
 #include <QByteArray>
 #include <QChar>
