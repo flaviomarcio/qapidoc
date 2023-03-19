@@ -79,13 +79,12 @@ public:
 
 public:
     Q_INVOKABLE explicit Document(QObject *parent = nullptr);
-    ~Document();
 
     //!
     //! \brief version
     //! \return
     //!
-    QByteArray version() const;
+    const QByteArray &version() const;
 
     //!
     //! \brief loadFromParent
