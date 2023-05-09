@@ -2,13 +2,6 @@
 
 #include <QObject>
 
-#define dPvtFree() \
-    { \
-        dPvt(); \
-        delete &p; \
-        this->p = nullptr; \
-    }
-
 #define Q_API_DOC_INFO() \
     Q_INVOKABLE const QVariant documentation() \
     { \

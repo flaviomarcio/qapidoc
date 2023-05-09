@@ -2,9 +2,9 @@
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<HeadersPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<HeadersPvt *>(this->p)
 
-class HeadersPvt
+class HeadersPvt:public QObject
 {
 public:
     Headers *parent = nullptr;
@@ -12,9 +12,7 @@ public:
     QString _format;
     QString _name;
     QString _type;
-    explicit HeadersPvt(Headers *parent) { this->parent = parent; }
-
-    virtual ~HeadersPvt() {}
+    explicit HeadersPvt(Headers *parent):QObject{parent} { this->parent = parent; }
 };
 
 Headers::Headers(QObject *parent) : ObjectMapper{parent}
@@ -22,15 +20,10 @@ Headers::Headers(QObject *parent) : ObjectMapper{parent}
     this->p = new HeadersPvt{this};
 }
 
-Headers::~Headers()
-{
-    dPvtFree();
-}
-
 const QString &Headers::name() const
 {
-    dPvt();
-    return p._name;
+    
+    return p->_name;
 }
 
 Headers &Headers::name(const QString &newName)
@@ -40,10 +33,10 @@ Headers &Headers::name(const QString &newName)
 
 Headers &Headers::setName(const QString &newName)
 {
-    dPvt();
-    if (p._name == newName)
+    
+    if (p->_name == newName)
         return *this;
-    p._name = newName;
+    p->_name = newName;
     emit nameChanged();
     return *this;
 }
@@ -55,8 +48,8 @@ Headers &Headers::resetName()
 
 const QString &Headers::description() const
 {
-    dPvt();
-    return p._description;
+    
+    return p->_description;
 }
 
 Headers &Headers::description(const QString &newDescription)
@@ -66,10 +59,10 @@ Headers &Headers::description(const QString &newDescription)
 
 Headers &Headers::setDescription(const QString &newDescription)
 {
-    dPvt();
-    if (p._description == newDescription)
+    
+    if (p->_description == newDescription)
         return *this;
-    p._description = newDescription;
+    p->_description = newDescription;
     emit descriptionChanged();
     return *this;
 }
@@ -81,8 +74,8 @@ Headers &Headers::resetDescription()
 
 const QString &Headers::type() const
 {
-    dPvt();
-    return p._type;
+    
+    return p->_type;
 }
 
 Headers &Headers::type(const QString &newType)
@@ -92,10 +85,10 @@ Headers &Headers::type(const QString &newType)
 
 Headers &Headers::setType(const QString &newType)
 {
-    dPvt();
-    if (p._type == newType)
+    
+    if (p->_type == newType)
         return *this;
-    p._type = newType;
+    p->_type = newType;
     emit typeChanged();
     return *this;
 }
@@ -107,8 +100,8 @@ Headers &Headers::resetType()
 
 const QString &Headers::format() const
 {
-    dPvt();
-    return p._format;
+    
+    return p->_format;
 }
 
 Headers &Headers::format(const QString &newFormat)
@@ -118,10 +111,10 @@ Headers &Headers::format(const QString &newFormat)
 
 Headers &Headers::setFormat(const QString &newFormat)
 {
-    dPvt();
-    if (p._format == newFormat)
+    
+    if (p->_format == newFormat)
         return *this;
-    p._format = newFormat;
+    p->_format = newFormat;
     emit formatChanged();
     return *this;
 }

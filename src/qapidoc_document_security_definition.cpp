@@ -1,4 +1,5 @@
 #include "./qapidoc_document_security_definition.h"
+#include <QVariant>
 
 namespace QApiDoc {
 
@@ -6,28 +7,24 @@ typedef QHash<int, const QMetaObject *> SecurityDefinitionFactoryMetaObject;
 
 Q_GLOBAL_STATIC(SecurityDefinitionFactoryMetaObject, staticSecurityDefinitionMetaObject)
 
-#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionPvt *>(this->p)
 
-class SecurityDefinitionPvt
+class SecurityDefinitionPvt:public QObject
 {
 public:
     SecurityDefinition *parent = nullptr;
     QString _description;
     QString _schemaNametion;
 
-    explicit SecurityDefinitionPvt(SecurityDefinition *parent) { this->parent = parent; }
-
-    virtual ~SecurityDefinitionPvt() {}
+    explicit SecurityDefinitionPvt(SecurityDefinition *parent) : QObject{parent}
+    {
+        this->parent = parent;
+    }
 };
 
 SecurityDefinition::SecurityDefinition(QObject *parent) : ObjectMapper{parent}
 {
     this->p = new SecurityDefinitionPvt{this};
-}
-
-SecurityDefinition::~SecurityDefinition()
-{
-    dPvtFree();
 }
 
 bool SecurityDefinition::registerSecurityDefinition(int securityDefinitionType,
@@ -58,8 +55,8 @@ SecurityDefinition *SecurityDefinition::newInstance(QObject *parent,
 
 const QString &SecurityDefinition::description() const
 {
-    dPvt();
-    return p._description;
+    
+    return p->_description;
 }
 
 SecurityDefinition &SecurityDefinition::description(const QString &newDescription)
@@ -69,10 +66,10 @@ SecurityDefinition &SecurityDefinition::description(const QString &newDescriptio
 
 SecurityDefinition &SecurityDefinition::setDescription(const QString &newDescription)
 {
-    dPvt();
-    if (p._description == newDescription)
+    
+    if (p->_description == newDescription)
         return *this;
-    p._description = newDescription;
+    p->_description = newDescription;
     emit descriptionChanged();
     return *this;
 }
@@ -91,8 +88,8 @@ QString SecurityDefinition::typeSecurityToString() const
 
 const QString &SecurityDefinition::schemaName() const
 {
-    dPvt();
-    return p._schemaNametion;
+    
+    return p->_schemaNametion;
 }
 
 SecurityDefinition &SecurityDefinition::schemaName(const QString &newSchemaName)
@@ -102,10 +99,10 @@ SecurityDefinition &SecurityDefinition::schemaName(const QString &newSchemaName)
 
 SecurityDefinition &SecurityDefinition::setSchemaName(const QString &newSchemaName)
 {
-    dPvt();
-    if (p._schemaNametion == newSchemaName)
+    
+    if (p->_schemaNametion == newSchemaName)
         return *this;
-    p._schemaNametion = newSchemaName;
+    p->_schemaNametion = newSchemaName;
     emit schemaNameChanged();
     return *this;
 }

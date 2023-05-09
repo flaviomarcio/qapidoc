@@ -1,12 +1,13 @@
 #pragma once
 
-#include "./qapidoc_common_types.h"
+#include <QVariantHash>
+#include <QVariantList>
 #include "./qapidoc_document_definition.h"
 #include "./qapidoc_document_path_operation_response_headers.h"
-#include "./qapidoc_includes.h"
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
-
+class ResponsePvt;
 //! \brief The Response class
 //!
 //! Describes a single response from an API Operation.
@@ -49,7 +50,6 @@ class Q_API_DOC_EXPORT Response : public ObjectMapper
 
 public:
     Q_INVOKABLE explicit Response(QObject *parent = nullptr);
-    ~Response();
 
     //!
     //! \brief statusCode
@@ -114,7 +114,7 @@ protected:
     const QVariantHash toExamplestoHash() const;
 
 private:
-    void *p = nullptr;
+    ResponsePvt *p = nullptr;
 };
 
 } // namespace QApiDoc

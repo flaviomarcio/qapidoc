@@ -1,11 +1,13 @@
 #pragma once
 
+#include <QVariantHash>
+#include <QVariantList>
 #include "./qapidoc_common_types.h"
 #include "./qapidoc_document_definition.h"
-#include "./qapidoc_includes.h"
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
-
+class ParameterPvt;
 //!
 //! \brief The Parameter class
 //!
@@ -90,7 +92,6 @@ public:
     //! \param parent
     //!
     Q_INVOKABLE explicit Parameter(QObject *parent = nullptr);
-    ~Parameter();
 
     //!
     //! \brief name
@@ -219,7 +220,7 @@ public:
     Parameter &resetRef();
 
 private:
-    void *p = nullptr;
+    ParameterPvt *p = nullptr;
 
     //    const QString qapi_RequestParameterAllowEmptyValue = QStringLiteral("allowEmptyValue");
     //    const QString qapi_RequestParameterDefault = QStringLiteral("default");

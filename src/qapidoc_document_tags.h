@@ -1,7 +1,7 @@
 #pragma once
 
+#include <QVariantHash>
 #include "./qapidoc_document_external.h"
-//#include "./qapidoc_includes.h"
 
 namespace QApiDoc {
 
@@ -23,7 +23,6 @@ class Q_API_DOC_EXPORT Tag : public ObjectMapper
 
 public:
     Q_INVOKABLE explicit Tag(QObject *parent = nullptr);
-    ~Tag();
 
     //!
     //! \brief name

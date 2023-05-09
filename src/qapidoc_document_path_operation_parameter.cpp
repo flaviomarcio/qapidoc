@@ -1,4 +1,5 @@
 #include "./qapidoc_document_path_operation_parameter.h"
+#include <QVariant>
 
 static const QStringList &__typeParameter()
 {
@@ -7,9 +8,9 @@ static const QStringList &__typeParameter()
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<RequestParameterPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<ParameterPvt *>(this->p)
 
-class RequestParameterPvt
+class ParameterPvt:public QObject
 {
 public:
     Parameter *parent = nullptr;
@@ -27,25 +28,18 @@ public:
     Parameter::QApiParameterInLocation _inLocation = Parameter::srplPath;
     Parameter::QApiTypeParameter _typeParameter;
 
-    explicit RequestParameterPvt(Parameter *parent) { this->parent = parent; }
-
-    virtual ~RequestParameterPvt() {}
+    explicit ParameterPvt(Parameter *parent):QObject{parent} { this->parent = parent; }
 };
 
 Parameter::Parameter(QObject *parent) : ObjectMapper{parent}
 {
-    this->p = new RequestParameterPvt{this};
-}
-
-Parameter::~Parameter()
-{
-    dPvtFree();
+    this->p = new ParameterPvt{this};
 }
 
 Parameter::QApiParameterInLocation Parameter::inLocation() const
 {
-    dPvt();
-    return p._inLocation;
+    
+    return p->_inLocation;
 }
 
 Parameter &Parameter::inLocation(const QVariant &newInLocation)
@@ -55,14 +49,14 @@ Parameter &Parameter::inLocation(const QVariant &newInLocation)
 
 Parameter &Parameter::setInLocation(const QVariant &newInLocation)
 {
-    dPvt();
-    if (p._inLocation == newInLocation)
+    
+    if (p->_inLocation == newInLocation)
         return *this;
     auto index = qapi_requestParameterInLocation().indexOf(newInLocation.toString().toLower());
     if (index >= 0)
-        p._inLocation = QApiParameterInLocation(index);
+        p->_inLocation = QApiParameterInLocation(index);
     else
-        p._inLocation = QApiParameterInLocation(newInLocation.toInt());
+        p->_inLocation = QApiParameterInLocation(newInLocation.toInt());
     emit inLocationChanged();
     return *this;
 }
@@ -74,14 +68,14 @@ Parameter &Parameter::resetInLocation()
 
 QString Parameter::inLocationToString() const
 {
-    dPvt();
-    return qapi_requestParameterInLocation().at(p._inLocation);
+    
+    return qapi_requestParameterInLocation().at(p->_inLocation);
 }
 
 bool Parameter::required() const
 {
-    dPvt();
-    return p._requiredValue;
+    
+    return p->_requiredValue;
 }
 
 Parameter &Parameter::required(bool newRequired)
@@ -91,10 +85,10 @@ Parameter &Parameter::required(bool newRequired)
 
 Parameter &Parameter::setRequired(bool newRequired)
 {
-    dPvt();
-    if (p._requiredValue == newRequired)
+    
+    if (p->_requiredValue == newRequired)
         return *this;
-    p._requiredValue = newRequired;
+    p->_requiredValue = newRequired;
     emit requiredChanged();
     return *this;
 }
@@ -106,14 +100,14 @@ Parameter &Parameter::resetRequired()
 
 Definition &Parameter::schema()
 {
-    dPvt();
-    return p._schema;
+    
+    return p->_schema;
 }
 
 QVariantHash Parameter::schemaObject()
 {
-    dPvt();
-    return p._schema.toVariant().toHash();
+    
+    return p->_schema.toVariant().toHash();
 }
 
 Parameter &Parameter::schema(const QVariant &newSchema)
@@ -123,16 +117,16 @@ Parameter &Parameter::schema(const QVariant &newSchema)
 
 Parameter &Parameter::setSchema(const QVariant &newSchema)
 {
-    dPvt();
-    p._schema.load(newSchema);
+    
+    p->_schema.load(newSchema);
     emit schemaChanged();
     return *this;
 }
 
 Parameter &Parameter::setSchema(const Definition &newSchema)
 {
-    dPvt();
-    p._schema.load(newSchema.toVariant());
+    
+    p->_schema.load(newSchema.toVariant());
     emit schemaChanged();
     return *this;
 }
@@ -145,8 +139,8 @@ Parameter &Parameter::resetSchema()
 
 const QString &Parameter::description() const
 {
-    dPvt();
-    return p._descriptionehema;
+    
+    return p->_descriptionehema;
 }
 
 Parameter &Parameter::description(const QString &newDescription)
@@ -156,10 +150,10 @@ Parameter &Parameter::description(const QString &newDescription)
 
 Parameter &Parameter::setDescription(const QString &newDescription)
 {
-    dPvt();
-    if (p._descriptionehema == newDescription)
+    
+    if (p->_descriptionehema == newDescription)
         return *this;
-    p._descriptionehema = newDescription;
+    p->_descriptionehema = newDescription;
     emit descriptionChanged();
     return *this;
 }
@@ -171,8 +165,8 @@ Parameter &Parameter::resetDescription()
 
 Parameter::QApiTypeParameter Parameter::typeParameter() const
 {
-    dPvt();
-    return p._typeParameter;
+    
+    return p->_typeParameter;
 }
 
 Parameter &Parameter::type(const int &newTypeParameter)
@@ -187,14 +181,14 @@ Parameter &Parameter::typeParameter(const int &newTypeParameter)
 
 Parameter &Parameter::setTypeParameter(const QVariant &newTypeParameter)
 {
-    dPvt();
-    if (p._typeParameter == newTypeParameter)
+    
+    if (p->_typeParameter == newTypeParameter)
         return *this;
     auto index = __typeParameter().indexOf(newTypeParameter.toString().toLower());
     if (index >= 0)
-        p._typeParameter = QApiTypeParameter(index);
+        p->_typeParameter = QApiTypeParameter(index);
     else
-        p._typeParameter = QApiTypeParameter(newTypeParameter.toInt());
+        p->_typeParameter = QApiTypeParameter(newTypeParameter.toInt());
     emit typeParameterChanged();
     return *this;
 }
@@ -206,8 +200,8 @@ Parameter &Parameter::resetTypeParameter()
 
 const QString &Parameter::pattern() const
 {
-    dPvt();
-    return p._pattern;
+    
+    return p->_pattern;
 }
 
 Parameter &Parameter::pattern(const QString &newPattern)
@@ -217,10 +211,10 @@ Parameter &Parameter::pattern(const QString &newPattern)
 
 Parameter &Parameter::setPattern(const QString &newPattern)
 {
-    dPvt();
-    if (p._pattern == newPattern)
+    
+    if (p->_pattern == newPattern)
         return *this;
-    p._pattern = newPattern;
+    p->_pattern = newPattern;
     emit patternChanged();
     return *this;
 }
@@ -232,16 +226,16 @@ Parameter &Parameter::resetPattern()
 
 const QVariantHash &Parameter::items() const
 {
-    dPvt();
-    return p._items;
+    
+    return p->_items;
 }
 
 Parameter &Parameter::setItems(const QVariantHash &newItems)
 {
-    dPvt();
-    if (p._items == newItems)
+    
+    if (p->_items == newItems)
         return *this;
-    p._items = newItems;
+    p->_items = newItems;
     emit itemsChanged();
     return *this;
 }
@@ -253,8 +247,8 @@ Parameter &Parameter::resetItems()
 
 const QString &Parameter::format() const
 {
-    dPvt();
-    return p._format;
+    
+    return p->_format;
 }
 
 Parameter &Parameter::format(const QString &newFormat)
@@ -264,10 +258,10 @@ Parameter &Parameter::format(const QString &newFormat)
 
 Parameter &Parameter::setFormat(const QString &newFormat)
 {
-    dPvt();
-    if (p._format == newFormat)
+    
+    if (p->_format == newFormat)
         return *this;
-    p._format = newFormat;
+    p->_format = newFormat;
     emit formatChanged();
     return *this;
 }
@@ -279,8 +273,8 @@ Parameter &Parameter::resetFormat()
 
 const QString &Parameter::defaultValue() const
 {
-    dPvt();
-    return p._defaultValuehema;
+    
+    return p->_defaultValuehema;
 }
 
 Parameter &Parameter::defaultValue(const QString &newDefault)
@@ -290,10 +284,10 @@ Parameter &Parameter::defaultValue(const QString &newDefault)
 
 Parameter &Parameter::setDefaultValue(const QString &newDefault)
 {
-    dPvt();
-    if (p._defaultValuehema == newDefault)
+    
+    if (p->_defaultValuehema == newDefault)
         return *this;
-    p._defaultValuehema = newDefault;
+    p->_defaultValuehema = newDefault;
     emit defaultValueChanged();
     return *this;
 }
@@ -305,8 +299,8 @@ Parameter &Parameter::resetDefaultValue()
 
 QStringList &Parameter::enumValue()
 {
-    dPvt();
-    return p._enumValuef;
+    
+    return p->_enumValuef;
 }
 
 Parameter &Parameter::enumValue(const QStringList &newEnum)
@@ -316,8 +310,8 @@ Parameter &Parameter::enumValue(const QStringList &newEnum)
 
 Parameter &Parameter::setEnumValue(const QStringList &newEnum)
 {
-    dPvt();
-    p._enumValuef = newEnum;
+    
+    p->_enumValuef = newEnum;
     emit enumValueChanged();
     return *this;
 }
@@ -329,8 +323,8 @@ Parameter &Parameter::resetEnumValue()
 
 bool Parameter::allowEmptyValue() const
 {
-    dPvt();
-    return p._allowEmptyValue;
+    
+    return p->_allowEmptyValue;
 }
 
 Parameter &Parameter::allowEmptyValue(bool newAllowEmptyValue)
@@ -340,10 +334,10 @@ Parameter &Parameter::allowEmptyValue(bool newAllowEmptyValue)
 
 Parameter &Parameter::setAllowEmptyValue(bool newAllowEmptyValue)
 {
-    dPvt();
-    if (p._allowEmptyValue == newAllowEmptyValue)
+    
+    if (p->_allowEmptyValue == newAllowEmptyValue)
         return *this;
-    p._allowEmptyValue = newAllowEmptyValue;
+    p->_allowEmptyValue = newAllowEmptyValue;
     emit allowEmptyValueChanged();
     return *this;
 }
@@ -355,8 +349,8 @@ Parameter &Parameter::resetAllowEmptyValue()
 
 const QString &Parameter::ref() const
 {
-    dPvt();
-    return p._ref;
+    
+    return p->_ref;
 }
 
 Parameter &Parameter::ref(const QString &newRef)
@@ -366,10 +360,10 @@ Parameter &Parameter::ref(const QString &newRef)
 
 Parameter &Parameter::setRef(const QString &newRef)
 {
-    dPvt();
-    if (p._ref == newRef)
+    
+    if (p->_ref == newRef)
         return *this;
-    p._ref = newRef;
+    p->_ref = newRef;
     emit refChanged();
     return *this;
 }
@@ -381,8 +375,8 @@ Parameter &Parameter::resetRef()
 
 const QString &Parameter::name() const
 {
-    dPvt();
-    return p._name;
+    
+    return p->_name;
 }
 
 Parameter &Parameter::name(const QString &newName)
@@ -392,10 +386,10 @@ Parameter &Parameter::name(const QString &newName)
 
 Parameter &Parameter::setName(const QString &newName)
 {
-    dPvt();
-    if (p._name == newName)
+    
+    if (p->_name == newName)
         return *this;
-    p._name = newName;
+    p->_name = newName;
     emit nameChanged();
     return *this;
 }

@@ -2,10 +2,9 @@
 
 #include "./qapidoc_common_types.h"
 #include "./qapidoc_document_security_definition.h"
-#include "./qapidoc_includes.h"
 
 namespace QApiDoc {
-
+class SecurityDefinitionBasicPvt;
 //!
 //! \brief The SecurityDefinitionBasic class
 //!
@@ -20,7 +19,6 @@ class Q_API_DOC_EXPORT SecurityDefinitionBasic : public SecurityDefinition
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
 public:
     Q_INVOKABLE explicit SecurityDefinitionBasic(QObject *parent = nullptr);
-    ~SecurityDefinitionBasic();
 
     //!
     //! \brief name
@@ -38,7 +36,7 @@ public:
     SecurityDefinitionType typeSecurity() const;
 
 private:
-    void *p = nullptr;
+    SecurityDefinitionBasicPvt *p = nullptr;
 signals:
 
     //!

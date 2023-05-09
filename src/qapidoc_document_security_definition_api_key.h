@@ -1,12 +1,11 @@
 #pragma once
 
-#include "./qapidoc_includes.h"
-
 #include "./qapidoc_common_types.h"
 #include "./qapidoc_document_security_definition.h"
+#include <QVariant>
 
 namespace QApiDoc {
-
+class SecurityDefinitionApiKeyPvt;
 //!
 //! \brief The SecurityDefinitionApiKey class
 //!
@@ -20,7 +19,7 @@ class Q_API_DOC_EXPORT SecurityDefinitionApiKey : public SecurityDefinition
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
 
     //! Required The location of the API key. Valid values are "query" or "header".
-    Q_PROPERTY(SecurityDefinitionApiKeyInLocation inLocation READ inLocation WRITE setInLocation
+    Q_PROPERTY(QVariant inLocation READ inLocation WRITE setInLocation
                    RESET resetInLocation NOTIFY inLocationChanged)
 public:
     //!
@@ -30,7 +29,6 @@ public:
     Q_ENUM(SecurityDefinitionApiKeyInLocation)
 
     Q_INVOKABLE explicit SecurityDefinitionApiKey(QObject *parent = nullptr);
-    ~SecurityDefinitionApiKey();
 
     //!
     //! \brief name
@@ -57,10 +55,8 @@ public:
     SecurityDefinitionType typeSecurity() const;
 
 private:
-    void *p = nullptr;
-    const QStringList qapi_SecurityDefinitionApiKeyInLocation{QString(),
-                                                              QStringLiteral("query"),
-                                                              QStringLiteral("header")};
+    SecurityDefinitionApiKeyPvt *p = nullptr;
+    const QStringList qapi_SecurityDefinitionApiKeyInLocation{{},QStringLiteral("query"),QStringLiteral("header")};
 signals:
     //!
     //! \brief nameChanged

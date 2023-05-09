@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./qapidoc_includes.h"
+//#include "./qapidoc_includes.h"
 #include <QCoreApplication>
 
 #define Q_API_DOC_METHOD_START_NAME QByteArrayLiteral("__doc_api")

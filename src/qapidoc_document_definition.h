@@ -1,8 +1,12 @@
 #pragma once
 
-#include "./qapidoc_includes.h"
+#include <QVariantHash>
+#include <QVariantList>
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
+
+class DefinitionPvt;
 
 //!
 //! \brief The Definition class
@@ -56,7 +60,7 @@ signals:
     void schemaChanged();
 
 private:
-    void *p = nullptr;
+    DefinitionPvt *p = nullptr;
 };
 
 } // namespace QApiDoc

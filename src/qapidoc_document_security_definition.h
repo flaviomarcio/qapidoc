@@ -1,9 +1,11 @@
 #pragma once
 
 #include "./qapidoc_common_types.h"
-#include "./qapidoc_includes.h"
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
+
+class SecurityDefinitionPvt;
 
 #define Q_SWAGGER_SECURITY_DEFINITION_REGISTER(SecurityDefinitionType, MetaObject) \
     static const auto __securityDefinition##MetaObject##__registerRegister \
@@ -33,7 +35,6 @@ public:
     Q_API_DECLARE_SECURITY_DEFINITION_TYPE()
 
     Q_INVOKABLE explicit SecurityDefinition(QObject *parent = nullptr);
-    ~SecurityDefinition();
 
     //!
     //! \brief registerSecurityDefinition
@@ -84,7 +85,7 @@ public:
     virtual QString typeSecurityToString() const;
 
 private:
-    void *p = nullptr;
+    SecurityDefinitionPvt *p = nullptr;
     const QStringList qapi_SecurityDefinitionType{QString(),
                                                   QStringLiteral("basic"),
                                                   QStringLiteral("apiKey"),

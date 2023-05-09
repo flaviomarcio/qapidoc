@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QVariantHash>
+#include <QVariantList>
 #include "./qapidoc_common_types.h"
 #include "./qapidoc_document_path_operation_parameter.h"
 #include "./qapidoc_document_path_operation_response.h"
@@ -83,7 +85,6 @@ public:
     Q_API_DECLARE_PATH_TYPE_OPERATION()
 
     Q_INVOKABLE explicit PathOperation(QObject *parent = nullptr);
-    ~PathOperation();
 
     //    //!
     //    //! \brief toVariant

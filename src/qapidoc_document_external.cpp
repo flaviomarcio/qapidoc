@@ -1,35 +1,28 @@
 #include "./qapidoc_document_external.h"
 
-#define dPvt() auto &p = *reinterpret_cast<ExternalDocumentPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<DocumentExternalPvt *>(this->p)
 
 namespace QApiDoc {
 
-class ExternalDocumentPvt
+class DocumentExternalPvt:public QObject
 {
 public:
     DocumentExternal *parent = nullptr;
     QString _description;
     QString _url;
 
-    explicit ExternalDocumentPvt(DocumentExternal *parent) { this->parent = parent; }
+    explicit DocumentExternalPvt(DocumentExternal *parent):QObject{parent} { this->parent = parent; }
 
-    virtual ~ExternalDocumentPvt() {}
 };
 
 DocumentExternal::DocumentExternal(QObject *parent) : ObjectMapper{parent}
 {
-    this->p = new ExternalDocumentPvt{this};
-}
-
-DocumentExternal::~DocumentExternal()
-{
-    dPvtFree();
+    this->p = new DocumentExternalPvt{this};
 }
 
 const QString &DocumentExternal::url() const
-{
-    dPvt();
-    return p._url;
+{  
+    return p->_url;
 }
 
 DocumentExternal &DocumentExternal::url(const QString &newUrl)
@@ -39,10 +32,10 @@ DocumentExternal &DocumentExternal::url(const QString &newUrl)
 
 DocumentExternal &DocumentExternal::setUrl(const QString &newUrl)
 {
-    dPvt();
-    if (p._url == newUrl)
+    
+    if (p->_url == newUrl)
         return *this;
-    p._url = newUrl;
+    p->_url = newUrl;
     emit urlChanged();
     return *this;
 }
@@ -54,8 +47,8 @@ DocumentExternal &DocumentExternal::resetUrl()
 
 const QString &DocumentExternal::description() const
 {
-    dPvt();
-    return p._description;
+    
+    return p->_description;
 }
 
 DocumentExternal &DocumentExternal::description(const QString &newDescription)
@@ -65,10 +58,10 @@ DocumentExternal &DocumentExternal::description(const QString &newDescription)
 
 DocumentExternal &DocumentExternal::setDescription(const QString &newDescription)
 {
-    dPvt();
-    if (p._description == newDescription)
+    
+    if (p->_description == newDescription)
         return *this;
-    p._description = newDescription;
+    p->_description = newDescription;
     emit descriptionChanged();
     return *this;
 }

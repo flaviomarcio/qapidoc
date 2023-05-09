@@ -1,9 +1,9 @@
 #pragma once
 
-#include "./qapidoc_includes.h"
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
-
+class HeadersPvt;
 //!
 //! \brief The Headers class
 //!
@@ -28,7 +28,6 @@ class Q_API_DOC_EXPORT Headers : public ObjectMapper
 
 public:
     Q_INVOKABLE explicit Headers(QObject *parent = nullptr);
-    ~Headers();
 
     //!
     //! \brief name
@@ -89,7 +88,7 @@ signals:
     void formatChanged();
 
 private:
-    void *p = nullptr;
+    HeadersPvt *p = nullptr;
 };
 
 } // namespace QApiDoc

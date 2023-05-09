@@ -2,15 +2,16 @@
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionBasicPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionBasicPvt *>(this->p)
 
-class SecurityDefinitionBasicPvt
+class SecurityDefinitionBasicPvt:public QObject
 {
 public:
     SecurityDefinitionBasic *parent = nullptr;
     QString _name;
 
-    explicit SecurityDefinitionBasicPvt(SecurityDefinitionBasic *parent) { this->parent = parent; }
+    explicit SecurityDefinitionBasicPvt(SecurityDefinitionBasic *parent):QObject{parent}
+    { this->parent = parent; }
 
     virtual ~SecurityDefinitionBasicPvt() {}
 };
@@ -20,15 +21,10 @@ SecurityDefinitionBasic::SecurityDefinitionBasic(QObject *parent) : SecurityDefi
     this->p = new SecurityDefinitionBasicPvt{this};
 }
 
-SecurityDefinitionBasic::~SecurityDefinitionBasic()
-{
-    dPvtFree();
-}
-
 const QString &SecurityDefinitionBasic::name() const
 {
-    dPvt();
-    return p._name;
+    
+    return p->_name;
 }
 
 SecurityDefinitionBasic &SecurityDefinitionBasic::name(const QString &newName)
@@ -38,10 +34,10 @@ SecurityDefinitionBasic &SecurityDefinitionBasic::name(const QString &newName)
 
 SecurityDefinitionBasic &SecurityDefinitionBasic::setName(const QString &newName)
 {
-    dPvt();
-    if (p._name == newName)
+    
+    if (p->_name == newName)
         return *this;
-    p._name = newName;
+    p->_name = newName;
     emit nameChanged();
     return *this;
 }

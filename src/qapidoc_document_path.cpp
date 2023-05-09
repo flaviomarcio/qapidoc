@@ -2,12 +2,13 @@
 #include "./qapidoc_common_types.h"
 #include "./qapidoc_document_path_operation.h"
 #include "./qapidoc_document_path_operation_parameter.h"
+#include "./qapidoc_common_types.h"
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<PathPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<PathPvt *>(this->p)
 
 class PathPvt
 {
@@ -27,26 +28,21 @@ Path::Path(QObject *parent) : ObjectMapper{parent}
     this->p = new PathPvt{this};
 }
 
-Path::~Path()
-{
-    dPvtFree();
-}
-
 QVariant Path::toVariant() const
 {
-    dPvt();
+    
     QVariantHash __operations;
-    for (auto &item : p._operations)
+    for (auto &item : p->_operations)
         __operations.insert(item->operationObject(), item->toVariant());
     return QVariantHash{{this->uri(), __operations}};
 }
 
 bool Path::load(const QVariant &value)
 {
-    dPvt();
+    
     auto vHash = value.toHash();
     QHashIterator<QString, QVariant> i(vHash);
-    p._operations.clear();
+    p->_operations.clear();
     while (i.hasNext()) {
         i.hasNext();
 
@@ -70,22 +66,22 @@ bool Path::load(const QVariant &value)
             delete operation;
             continue;
         }
-        p._operations << operation;
+        p->_operations << operation;
     }
     return true;
 }
 
 QList<PathOperation *> &Path::operations() const
 {
-    dPvt();
-    return p._operations;
+    
+    return p->_operations;
 }
 
 QVariantList Path::operationsObject() const
 {
-    dPvt();
+    
     QVariantList __return;
-    for (auto &item : p._operations)
+    for (auto &item : p->_operations)
         __return << item->toVariant();
     return __return;
 }
@@ -97,22 +93,22 @@ Path &Path::operations(const QVariantList &newOperations)
 
 Path &Path::operations(PathOperation *newOperation)
 {
-    dPvt();
-    return this->setOperations(p._operations << newOperation);
+    
+    return this->setOperations(p->_operations << newOperation);
 }
 
 Path &Path::setOperations(const QVariantList &newOperations)
 {
-    dPvt();
-    qDeleteAll(p._operations);
-    p._operations.clear();
+    
+    qDeleteAll(p->_operations);
+    p->_operations.clear();
     for (auto &v : newOperations) {
         auto item = new PathOperation(this);
         if (!item->load(v)) {
             delete item;
             continue;
         }
-        p._operations << item;
+        p->_operations << item;
     }
     emit operationsChanged();
     return *this;
@@ -120,13 +116,13 @@ Path &Path::setOperations(const QVariantList &newOperations)
 
 Path &Path::setOperations(const QList<PathOperation *> &newOperations)
 {
-    dPvt();
-    auto aux = p._operations;
-    p._operations.clear();
+    
+    auto aux = p->_operations;
+    p->_operations.clear();
     for (auto &item : newOperations) {
         aux.removeOne(item);
-        if (!p._operations.contains(item))
-            p._operations << item;
+        if (!p->_operations.contains(item))
+            p->_operations << item;
     }
     qDeleteAll(aux);
     emit operationsChanged();
@@ -150,17 +146,17 @@ PathOperation &Path::operation(const QString &newOperation)
 
 PathOperation &Path::operation(const int &newOperation)
 {
-    dPvt();
+    
     auto pathOperation = new PathOperation(this);
     pathOperation->setOperation(newOperation);
-    p._operations << pathOperation;
+    p->_operations << pathOperation;
     return *pathOperation;
 }
 
 const QString &Path::uri() const
 {
-    dPvt();
-    return p._uri;
+    
+    return p->_uri;
 }
 
 Path &Path::uri(const QString &newUri)
@@ -170,10 +166,10 @@ Path &Path::uri(const QString &newUri)
 
 Path &Path::setUri(const QString &newUri)
 {
-    dPvt();
-    if (p._uri == newUri)
+    
+    if (p->_uri == newUri)
         return *this;
-    p._uri = newUri;
+    p->_uri = newUri;
     emit uriChanged();
     return *this;
 }
@@ -185,23 +181,23 @@ Path &Path::resetUri()
 
 const QVariantList Path::parametersObject() const
 {
-    dPvt();
+    
     QVariantList __return;
-    for (auto &item : p._parameters)
+    for (auto &item : p->_parameters)
         __return << item->toVariant();
     return __return;
 }
 
 const QList<Parameter *> Path::parameters() const
 {
-    dPvt();
-    return p._parameters;
+    
+    return p->_parameters;
 }
 
 Path &Path::parameters(Parameter *newParameters)
 {
-    dPvt();
-    return this->setParameters(p._parameters << newParameters);
+    
+    return this->setParameters(p->_parameters << newParameters);
 }
 
 Path &Path::parameters(const QVariantList &newParameters)
@@ -211,16 +207,16 @@ Path &Path::parameters(const QVariantList &newParameters)
 
 Path &Path::setParameters(const QVariantList &newParameters)
 {
-    dPvt();
-    qDeleteAll(p._parameters);
-    p._parameters.clear();
+    
+    qDeleteAll(p->_parameters);
+    p->_parameters.clear();
     for (auto &v : newParameters) {
         auto item = new Parameter(this);
         if (!item->load(v)) {
             delete item;
             continue;
         }
-        p._parameters << item;
+        p->_parameters << item;
     }
     emit parametersChanged();
     return *this;
@@ -228,14 +224,14 @@ Path &Path::setParameters(const QVariantList &newParameters)
 
 Path &Path::setParameters(const QList<Parameter *> &newParameters)
 {
-    dPvt();
-    auto aux = p._parameters;
-    p._parameters.clear();
+    
+    auto aux = p->_parameters;
+    p->_parameters.clear();
     for (auto &item : newParameters) {
         aux.removeOne(item);
 
         if (!aux.contains(item))
-            p._parameters << item;
+            p->_parameters << item;
     }
     qDeleteAll(aux);
     emit parametersChanged();

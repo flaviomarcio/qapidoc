@@ -1,16 +1,17 @@
 #include "./qapidoc_document_security_definition_oauth2_scope.h"
+#include <QVariant>
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionOAuth2ScopePvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionOAuth2ScopePvt *>(this->p)
 
-class SecurityDefinitionOAuth2ScopePvt
+class SecurityDefinitionOAuth2ScopePvt:public QObject
 {
 public:
     SecurityDefinitionOAuth2Scope *parent = nullptr;
     QString _description;
     QString _scopeName;
-    explicit SecurityDefinitionOAuth2ScopePvt(SecurityDefinitionOAuth2Scope *parent)
+    explicit SecurityDefinitionOAuth2ScopePvt(SecurityDefinitionOAuth2Scope *parent):QObject{parent}
     {
         this->parent = parent;
     }
@@ -23,15 +24,10 @@ SecurityDefinitionOAuth2Scope::SecurityDefinitionOAuth2Scope(QObject *parent) : 
     this->p = new SecurityDefinitionOAuth2ScopePvt{this};
 }
 
-SecurityDefinitionOAuth2Scope::~SecurityDefinitionOAuth2Scope()
-{
-    dPvtFree();
-}
-
 const QString &SecurityDefinitionOAuth2Scope::description() const
 {
-    dPvt();
-    return p._description;
+    
+    return p->_description;
 }
 
 SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::description(
@@ -43,10 +39,10 @@ SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::description(
 SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::setDescription(
     const QString &newDescription)
 {
-    dPvt();
-    if (p._description == newDescription)
+    
+    if (p->_description == newDescription)
         return *this;
-    p._description = newDescription;
+    p->_description = newDescription;
     emit descriptionChanged();
     return *this;
 }
@@ -58,8 +54,8 @@ SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::resetDescription()
 
 const QString &SecurityDefinitionOAuth2Scope::scopeName() const
 {
-    dPvt();
-    return p._scopeName;
+    
+    return p->_scopeName;
 }
 
 SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::scopeName(const QString &newScopeName)
@@ -70,10 +66,10 @@ SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::scopeName(const QS
 SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::setScopeName(
     const QString &newScopeName)
 {
-    dPvt();
-    if (p._scopeName == newScopeName)
+    
+    if (p->_scopeName == newScopeName)
         return *this;
-    p._scopeName = newScopeName;
+    p->_scopeName = newScopeName;
     emit scopeNameChanged();
     return *this;
 }

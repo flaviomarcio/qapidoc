@@ -4,9 +4,9 @@
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionOAuth2Pvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionOAuth2Pvt *>(this->p)
 
-class SecurityDefinitionOAuth2Pvt
+class SecurityDefinitionOAuth2Pvt:public QObject
 {
 public:
     SecurityDefinitionOAuth2 *parent = nullptr;
@@ -14,22 +14,15 @@ public:
     QString _authorizationUrl;
     QString _flow;
     QList<SecurityDefinitionOAuth2Scope *> _scopes;
-    explicit SecurityDefinitionOAuth2Pvt(SecurityDefinitionOAuth2 *parent)
+    explicit SecurityDefinitionOAuth2Pvt(SecurityDefinitionOAuth2 *parent):QObject{parent}
     {
         this->parent = parent;
     }
-
-    virtual ~SecurityDefinitionOAuth2Pvt() {}
 };
 
 SecurityDefinitionOAuth2::SecurityDefinitionOAuth2(QObject *parent) : SecurityDefinition{parent}
 {
     this->p = new SecurityDefinitionOAuth2Pvt{this};
-}
-
-SecurityDefinitionOAuth2::~SecurityDefinitionOAuth2()
-{
-    dPvtFree();
 }
 
 SecurityDefinition::SecurityDefinitionType SecurityDefinitionOAuth2::typeSecurity() const
@@ -39,17 +32,17 @@ SecurityDefinition::SecurityDefinitionType SecurityDefinitionOAuth2::typeSecurit
 
 const QVariantHash SecurityDefinitionOAuth2::scopesObject() const
 {
-    dPvt();
+    
     QVariantHash __return;
-    for (auto &item : p._scopes)
+    for (auto &item : p->_scopes)
         __return.insert(item->scopeName(), item->description());
     return __return;
 }
 
 QList<SecurityDefinitionOAuth2Scope *> &SecurityDefinitionOAuth2::scopes() const
 {
-    dPvt();
-    return p._scopes;
+    
+    return p->_scopes;
 }
 
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::scopes(const QVariant &newScopes)
@@ -59,20 +52,20 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::scopes(const QVariant &newSc
 
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setScopes(const QVariant &newScopes)
 {
-    dPvt();
+    
     QVariantList vList;
     switch (newScopes.typeId()) {
     case QMetaType::QVariantList:
     case QMetaType::QStringList: {
-        qDeleteAll(p._scopes);
-        p._scopes.clear();
+        qDeleteAll(p->_scopes);
+        p->_scopes.clear();
         vList = newScopes.toList();
         break;
     }
     case QMetaType::QVariantHash:
     case QMetaType::QVariantMap: {
-        qDeleteAll(p._scopes);
-        p._scopes.clear();
+        qDeleteAll(p->_scopes);
+        p->_scopes.clear();
         vList = newScopes.toHash().values();
         break;
     }
@@ -86,7 +79,7 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setScopes(const QVariant &ne
             delete item;
             continue;
         }
-        p._scopes.append(item);
+        p->_scopes.append(item);
     }
     emit scopesChanged();
     return *this;
@@ -95,13 +88,13 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setScopes(const QVariant &ne
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setScopes(
     const QList<SecurityDefinitionOAuth2Scope *> &newScopes)
 {
-    dPvt();
-    auto aux = p._scopes;
-    p._scopes.clear();
+    
+    auto aux = p->_scopes;
+    p->_scopes.clear();
     for (auto &item : newScopes) {
         aux.removeOne(item);
         item->setParent(this);
-        p._scopes.append(item);
+        p->_scopes.append(item);
     }
     qDeleteAll(aux);
     emit scopesChanged();
@@ -115,8 +108,8 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::resetScopes()
 
 const QString &SecurityDefinitionOAuth2::flow() const
 {
-    dPvt();
-    return p._flow;
+    
+    return p->_flow;
 }
 
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::flow(const QString &newFlow)
@@ -126,10 +119,10 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::flow(const QString &newFlow)
 
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setFlow(const QString &newFlow)
 {
-    dPvt();
-    if (p._flow == newFlow)
+    
+    if (p->_flow == newFlow)
         return *this;
-    p._flow = newFlow;
+    p->_flow = newFlow;
     emit flowChanged();
     return *this;
 }
@@ -141,8 +134,8 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::resetFlow()
 
 const QString &SecurityDefinitionOAuth2::authorizationUrl() const
 {
-    dPvt();
-    return p._authorizationUrl;
+    
+    return p->_authorizationUrl;
 }
 
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::authorizationUrl(
@@ -154,10 +147,10 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::authorizationUrl(
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setAuthorizationUrl(
     const QString &newAuthorizationUrl)
 {
-    dPvt();
-    if (p._authorizationUrl == newAuthorizationUrl)
+    
+    if (p->_authorizationUrl == newAuthorizationUrl)
         return *this;
-    p._authorizationUrl = newAuthorizationUrl;
+    p->_authorizationUrl = newAuthorizationUrl;
     emit authorizationUrlChanged();
     return *this;
 }
@@ -169,8 +162,8 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::resetAuthorizationUrl()
 
 const QString &SecurityDefinitionOAuth2::name() const
 {
-    dPvt();
-    return p._name;
+    
+    return p->_name;
 }
 
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::name(const QString &newName)
@@ -180,10 +173,10 @@ SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::name(const QString &newName)
 
 SecurityDefinitionOAuth2 &SecurityDefinitionOAuth2::setName(const QString &newName)
 {
-    dPvt();
-    if (p._name == newName)
+    
+    if (p->_name == newName)
         return *this;
-    p._name = newName;
+    p->_name = newName;
     emit nameChanged();
     return *this;
 }

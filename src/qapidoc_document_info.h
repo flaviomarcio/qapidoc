@@ -1,12 +1,13 @@
 #pragma once
 
-#include "./qapidoc_includes.h"
-
+#include <QVariantHash>
+#include <QVariantList>
+#include "./qapidoc_object_mapper.h"
 #include "./qapidoc_document_info_contact.h"
 #include "./qapidoc_document_info_license.h"
 
 namespace QApiDoc {
-
+class InfoPvt;
 //!
 //! \brief The Info class
 //!
@@ -41,7 +42,6 @@ class Q_API_DOC_EXPORT Info : public ObjectMapper
 
 public:
     Q_INVOKABLE explicit Info(QObject *parent = nullptr);
-    ~Info();
 
     //!
     //! \brief version
@@ -110,7 +110,7 @@ signals:
     void licenseChanged();
 
 private:
-    void *p = nullptr;
+    InfoPvt *p = nullptr;
 };
 
 } // namespace QApiDoc

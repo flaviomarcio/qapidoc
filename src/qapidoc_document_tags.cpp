@@ -1,8 +1,9 @@
 #include "./qapidoc_document_tags.h"
+#include <QVariant>
 
 namespace QApiDoc {
 
-class TagPvt
+class TagPvt:public QObject
 {
 public:
     Tag *parent = nullptr;
@@ -10,7 +11,7 @@ public:
     QString description;
     QString name;
 
-    explicit TagPvt(Tag *parent) { this->parent = parent; }
+    explicit TagPvt(Tag *parent):QObject{parent} { this->parent = parent; }
 
     virtual ~TagPvt() {}
 };
@@ -18,11 +19,6 @@ public:
 Tag::Tag(QObject *parent) : ObjectMapper{parent}
 {
     this->p = new TagPvt{this};
-}
-
-Tag::~Tag()
-{
-    delete p;
 }
 
 const QString &Tag::description() const

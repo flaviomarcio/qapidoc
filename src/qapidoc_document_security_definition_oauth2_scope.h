@@ -1,10 +1,9 @@
 #pragma once
 
-#include "./qapidoc_common_types.h"
-#include "./qapidoc_document_security_definition.h"
-#include "./qapidoc_includes.h"
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
+class SecurityDefinitionOAuth2ScopePvt;
 //!
 //! \brief The SecurityDefinitionOAuth2Scope class
 //!
@@ -22,7 +21,6 @@ class Q_API_DOC_EXPORT SecurityDefinitionOAuth2Scope : public ObjectMapper
 
 public:
     Q_INVOKABLE explicit SecurityDefinitionOAuth2Scope(QObject *parent = nullptr);
-    ~SecurityDefinitionOAuth2Scope();
 
     //!
     //! \brief scopeName
@@ -42,9 +40,6 @@ public:
     SecurityDefinitionOAuth2Scope &setDescription(const QString &newDescription);
     SecurityDefinitionOAuth2Scope &resetDescription();
 
-private:
-    void *p = nullptr;
-
 signals:
     //!
     //! \brief scopeNameChanged
@@ -55,6 +50,8 @@ signals:
     //! \brief descriptionChanged
     //!
     void descriptionChanged();
+private:
+    SecurityDefinitionOAuth2ScopePvt *p = nullptr;
 };
 
 } // namespace QApiDoc

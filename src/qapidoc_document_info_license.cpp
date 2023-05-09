@@ -2,18 +2,16 @@
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<InfoLicensePvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<InfoLicensePvt *>(this->p)
 
-class InfoLicensePvt
+class InfoLicensePvt:public QObject
 {
 public:
     InfoLicense *parent = nullptr;
     QString _name;
     QString _url;
 
-    explicit InfoLicensePvt(InfoLicense *parent) { this->parent = parent; }
-
-    virtual ~InfoLicensePvt() {}
+    explicit InfoLicensePvt(InfoLicense *parent):QObject{parent} { this->parent = parent; }
 };
 
 InfoLicense::InfoLicense(QObject *parent) : ObjectMapper{parent}
@@ -21,15 +19,10 @@ InfoLicense::InfoLicense(QObject *parent) : ObjectMapper{parent}
     this->p = new InfoLicensePvt{this};
 }
 
-InfoLicense::~InfoLicense()
-{
-    dPvtFree();
-}
-
 const QString &InfoLicense::url() const
 {
-    dPvt();
-    return p._url;
+    
+    return p->_url;
 }
 
 InfoLicense &InfoLicense::url(const QString &newUrl)
@@ -40,10 +33,10 @@ InfoLicense &InfoLicense::url(const QString &newUrl)
 
 InfoLicense &InfoLicense::setUrl(const QString &newUrl)
 {
-    dPvt();
-    if (p._url == newUrl)
+    
+    if (p->_url == newUrl)
         return *this;
-    p._url = newUrl;
+    p->_url = newUrl;
     emit urlChanged();
     return *this;
 }
@@ -55,8 +48,8 @@ InfoLicense &InfoLicense::resetUrl()
 
 const QString &InfoLicense::name() const
 {
-    dPvt();
-    return p._name;
+    
+    return p->_name;
 }
 
 InfoLicense &InfoLicense::name(const QString &newName)
@@ -67,10 +60,10 @@ InfoLicense &InfoLicense::name(const QString &newName)
 
 InfoLicense &InfoLicense::setName(const QString &newName)
 {
-    dPvt();
-    if (p._name == newName)
+    
+    if (p->_name == newName)
         return *this;
-    p._name = newName;
+    p->_name = newName;
     emit nameChanged();
     return *this;
 }

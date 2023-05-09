@@ -1,10 +1,13 @@
 #pragma once
 
-#include "./qapidoc_common_types.h"
-#include "./qapidoc_includes.h"
+#include <QVariantHash>
+#include <QVariantList>
+#include "./qapidoc_document_path_operation.h"
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
 
+class PathPvt;
 class PathOperation;
 class Parameter;
 //!
@@ -30,7 +33,6 @@ class Q_API_DOC_EXPORT Path : public ObjectMapper
                    resetParameters NOTIFY parametersChanged)
 public:
     Q_INVOKABLE explicit Path(QObject *parent = nullptr);
-    ~Path();
 
     //!
     //! \brief toVariant
@@ -80,12 +82,12 @@ public:
     Path &setParameters(const QList<Parameter *> &newParameters);
     Path &resetParameters();
 
-private:
-    void *p = nullptr;
 signals:
     void operationsChanged();
     void uriChanged();
     void parametersChanged();
+private:
+    PathPvt *p = nullptr;
 };
 
 } // namespace QApiDoc

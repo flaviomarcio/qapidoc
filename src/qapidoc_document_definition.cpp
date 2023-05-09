@@ -1,16 +1,15 @@
 #include "./qapidoc_document_definition.h"
+#include <QVariantHash>
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<DefinitionPvt *>(this->p)
-
-class DefinitionPvt
+class DefinitionPvt:public QObject
 {
 public:
     Definition *parent = nullptr;
     QString _name;
     QVariantHash _schema;
-    explicit DefinitionPvt(Definition *parent) { this->parent = parent; }
+    explicit DefinitionPvt(Definition *parent):QObject{parent} { this->parent = parent; }
 
     virtual ~DefinitionPvt() {}
 };
@@ -22,23 +21,23 @@ Definition::Definition(QObject *parent) : ObjectMapper{parent}
 
 Definition::~Definition()
 {
-    dPvtFree();
+    //delete this->p;
 }
 
 //QVariantHash Definition::toRefDefinition()const
 //{
-//    dPvt();
+//
 //    static const auto c_schemaRef = QStringLiteral("$ref");
 //    static const auto c_PrefixDefinitionName = QStringLiteral("#/definitions/");
 //    QVariantHash __return;
-//    __return.insert(c_schemaRef, c_PrefixDefinitionName + p._name);
+//    __return.insert(c_schemaRef, c_PrefixDefinitionName + p->_name);
 //    return __return;
 //}
 
 const QString &Definition::name() const
 {
-    dPvt();
-    return p._name;
+
+    return p->_name;
 }
 
 Definition &Definition::name(const QString &newName)
@@ -48,18 +47,18 @@ Definition &Definition::name(const QString &newName)
 
 Definition &Definition::setName(const QString &newName)
 {
-    dPvt();
-    if (p._name == newName)
+
+    if (p->_name == newName)
         return *this;
-    p._name = newName;
+    p->_name = newName;
     emit nameChanged();
     return *this;
 }
 
 const QVariantHash &Definition::schema() const
 {
-    dPvt();
-    return p._schema;
+
+    return p->_schema;
 }
 
 Definition &Definition::schema(const QVariantHash &newSchema)
@@ -69,10 +68,10 @@ Definition &Definition::schema(const QVariantHash &newSchema)
 
 Definition &Definition::setSchema(const QVariantHash &newSchema)
 {
-    dPvt();
-    if (p._schema == newSchema)
+
+    if (p->_schema == newSchema)
         return *this;
-    p._schema = newSchema;
+    p->_schema = newSchema;
     emit schemaChanged();
     return *this;
 }

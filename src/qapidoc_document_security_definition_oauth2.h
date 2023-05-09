@@ -2,12 +2,13 @@
 
 #include "./qapidoc_common_types.h"
 #include "./qapidoc_document_security_definition.h"
-#include "./qapidoc_includes.h"
+#include <QVariantHash>
+#include <QVariantList>
 
 namespace QApiDoc {
 
 class SecurityDefinitionOAuth2Scope;
-
+class SecurityDefinitionOAuth2Pvt;
 //!
 //! \brief The SecurityDefinitionOAuth2 class
 //!
@@ -30,7 +31,6 @@ class Q_API_DOC_EXPORT SecurityDefinitionOAuth2 : public SecurityDefinition
                    scopesChanged)
 public:
     Q_INVOKABLE explicit SecurityDefinitionOAuth2(QObject *parent = nullptr);
-    ~SecurityDefinitionOAuth2();
 
     //!
     //! \brief name
@@ -97,7 +97,7 @@ signals:
     void scopesChanged();
 
 private:
-    void *p = nullptr;
+    SecurityDefinitionOAuth2Pvt *p = nullptr;
 };
 
 Q_SWAGGER_SECURITY_DEFINITION_REGISTER(sstOAuth2, SecurityDefinitionOAuth2);

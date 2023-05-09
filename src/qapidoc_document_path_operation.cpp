@@ -1,13 +1,14 @@
 #include "./qapidoc_document_path_operation.h"
 #include <QUuid>
+#include <QVariant>
 //#include "./qapidoc_document_path.h"
 //#include "./qapidoc_meta_types.h"
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<PathOperationPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<PathOperationPvt *>(this->p)
 
-class PathOperationPvt
+class PathOperationPvt:public QObject
 {
 public:
     PathOperation *parent = nullptr;
@@ -24,19 +25,12 @@ public:
     QHash<QString, Response *> responses;
     QList<Parameter *> parameters;
 
-    explicit PathOperationPvt(PathOperation *parent) { this->parent = parent; }
-
-    virtual ~PathOperationPvt() {}
+    explicit PathOperationPvt(PathOperation *parent):QObject{parent} { this->parent = parent; }
 };
 
 PathOperation::PathOperation(QObject *parent) : ObjectMapper{parent}
 {
     this->p = new PathOperationPvt{this};
-}
-
-PathOperation::~PathOperation()
-{
-    delete p;
 }
 
 PathOperation::QApiPathTypeOperation PathOperation::operation() const

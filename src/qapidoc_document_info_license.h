@@ -1,9 +1,9 @@
 #pragma once
 
-#include "./qapidoc_includes.h"
+#include "./qapidoc_object_mapper.h"
 
 namespace QApiDoc {
-
+class InfoLicensePvt;
 //!
 //! \brief The InfoLicense class
 //! License information for the exposed API.
@@ -19,7 +19,6 @@ class Q_API_DOC_EXPORT InfoLicense : public ObjectMapper
 
 public:
     Q_INVOKABLE explicit InfoLicense(QObject *parent = nullptr);
-    ~InfoLicense();
 
     //!
     //! \brief name
@@ -39,12 +38,12 @@ public:
     InfoLicense &setUrl(const QString &newUrl);
     InfoLicense &resetUrl();
 
-private:
-    void *p = nullptr;
 
 signals:
     void nameChanged();
     void urlChanged();
+private:
+    InfoLicensePvt *p = nullptr;
 };
 
 } // namespace QApiDoc

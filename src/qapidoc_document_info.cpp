@@ -1,10 +1,11 @@
 #include "./qapidoc_document_info.h"
+#include <QVariant>
 
 namespace QApiDoc {
 
-#define dPvt() auto &p = *reinterpret_cast<InfoPvt *>(this->p)
+//#define dPvt() auto &p = *reinterpret_cast<InfoPvt *>(this->p)
 
-class InfoPvt
+class InfoPvt:public QObject
 {
 public:
     Info *parent = nullptr;
@@ -15,9 +16,7 @@ public:
     QString _title;
     QString _version;
 
-    explicit InfoPvt(Info *parent) { this->parent = parent; }
-
-    virtual ~InfoPvt() {}
+    explicit InfoPvt(Info *parent):QObject{parent} { this->parent = parent; }
 };
 
 Info::Info(QObject *parent) : ObjectMapper{parent}
@@ -25,15 +24,10 @@ Info::Info(QObject *parent) : ObjectMapper{parent}
     this->p = new InfoPvt{this};
 }
 
-Info::~Info()
-{
-    dPvtFree();
-}
-
 const QString &Info::version() const
 {
-    dPvt();
-    return p._version;
+    
+    return p->_version;
 }
 
 Info &Info::version(const QString &newVersion)
@@ -44,10 +38,10 @@ Info &Info::version(const QString &newVersion)
 
 Info &Info::setVersion(const QString &newVersion)
 {
-    dPvt();
-    if (p._version == newVersion)
+    
+    if (p->_version == newVersion)
         return *this;
-    p._version = newVersion;
+    p->_version = newVersion;
     emit versionChanged();
     return *this;
 }
@@ -59,8 +53,8 @@ Info &Info::resetVersion()
 
 const QString &Info::title() const
 {
-    dPvt();
-    return p._title;
+    
+    return p->_title;
 }
 
 Info &Info::title(const QString &newTitle)
@@ -71,10 +65,10 @@ Info &Info::title(const QString &newTitle)
 
 Info &Info::setTitle(const QString &newTitle)
 {
-    dPvt();
-    if (p._title == newTitle)
+    
+    if (p->_title == newTitle)
         return *this;
-    p._title = newTitle;
+    p->_title = newTitle;
     emit titleChanged();
     return *this;
 }
@@ -86,8 +80,8 @@ Info &Info::resetTitle()
 
 const QString &Info::description() const
 {
-    dPvt();
-    return p._description;
+    
+    return p->_description;
 }
 
 Info &Info::description(const QString &newDescription)
@@ -98,10 +92,10 @@ Info &Info::description(const QString &newDescription)
 
 Info &Info::setDescription(const QString &newDescription)
 {
-    dPvt();
-    if (p._description == newDescription)
+    
+    if (p->_description == newDescription)
         return *this;
-    p._description = newDescription;
+    p->_description = newDescription;
     emit descriptionChanged();
     return *this;
 }
@@ -113,8 +107,8 @@ Info &Info::resetDescription()
 
 const QString &Info::termsOfService()
 {
-    dPvt();
-    return p._termsOfService;
+    
+    return p->_termsOfService;
 }
 
 Info &Info::termsOfService(const QString &newTermsOfService)
@@ -125,10 +119,10 @@ Info &Info::termsOfService(const QString &newTermsOfService)
 
 Info &Info::setTermsOfService(const QString &newTermsOfService)
 {
-    dPvt();
-    if (p._termsOfService == newTermsOfService)
+    
+    if (p->_termsOfService == newTermsOfService)
         return *this;
-    p._termsOfService = newTermsOfService;
+    p->_termsOfService = newTermsOfService;
     emit termsOfServiceChanged();
     return *this;
 }
@@ -140,14 +134,14 @@ Info &Info::resetTermsOfService()
 
 InfoContact &Info::contact()
 {
-    dPvt();
-    return p._contact;
+    
+    return p->_contact;
 }
 
 QVariantHash Info::contactObject() const
 {
-    dPvt();
-    return p._contact.toVariant().toHash();
+    
+    return p->_contact.toVariant().toHash();
 }
 
 Info &Info::contact(const QVariant &newContact)
@@ -157,36 +151,36 @@ Info &Info::contact(const QVariant &newContact)
 
 Info &Info::setContact(const QVariant &newContact)
 {
-    dPvt();
-    p._contact.load(newContact);
+    
+    p->_contact.load(newContact);
     return *this;
 }
 
 Info &Info::setContact(const InfoContact &newContact)
 {
-    dPvt();
-    p._contact.load(newContact.toVariant());
+    
+    p->_contact.load(newContact.toVariant());
     emit contactChanged();
     return *this;
 }
 
 Info &Info::resetContact()
 {
-    dPvt();
-    p._contact.clear();
+    
+    p->_contact.clear();
     return *this;
 }
 
 InfoLicense &Info::license()
 {
-    dPvt();
-    return p._license;
+    
+    return p->_license;
 }
 
 QVariantHash Info::licenseObject() const
 {
-    dPvt();
-    return p._license.toVariant().toHash();
+    
+    return p->_license.toVariant().toHash();
 }
 
 Info &Info::license(const QVariant &newLicense)
@@ -196,23 +190,23 @@ Info &Info::license(const QVariant &newLicense)
 
 Info &Info::setLicense(const QVariant &newLicense)
 {
-    dPvt();
-    p._license.load(newLicense);
+    
+    p->_license.load(newLicense);
     return *this;
 }
 
 Info &Info::setLicense(const InfoLicense &newLicense)
 {
-    dPvt();
-    p._license.load(newLicense.toVariant());
+    
+    p->_license.load(newLicense.toVariant());
     emit licenseChanged();
     return *this;
 }
 
 Info &Info::resetLicense()
 {
-    dPvt();
-    p._license.clear();
+    
+    p->_license.clear();
     return *this;
 }
 
