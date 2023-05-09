@@ -1,10 +1,7 @@
 #include "./qapidoc_document_security_definition_oauth2.h"
 #include "./qapidoc_document_security_definition_oauth2_scope.h"
-//#include "./qapidoc_meta_types.h"
 
 namespace QApiDoc {
-
-//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionOAuth2Pvt *>(this->p)
 
 class SecurityDefinitionOAuth2Pvt:public QObject
 {

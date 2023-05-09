@@ -8,8 +8,6 @@ static const QStringList &__typeParameter()
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<ParameterPvt *>(this->p)
-
 class ParameterPvt:public QObject
 {
 public:

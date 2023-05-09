@@ -8,8 +8,6 @@
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<PathPvt *>(this->p)
-
 class PathPvt
 {
 public:

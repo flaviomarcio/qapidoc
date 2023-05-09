@@ -1,7 +1,5 @@
 #include "./qapidoc_document_external.h"
 
-//#define dPvt() auto &p = *reinterpret_cast<DocumentExternalPvt *>(this->p)
-
 namespace QApiDoc {
 
 class DocumentExternalPvt:public QObject

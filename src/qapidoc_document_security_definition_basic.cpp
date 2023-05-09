@@ -2,8 +2,6 @@
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionBasicPvt *>(this->p)
-
 class SecurityDefinitionBasicPvt:public QObject
 {
 public:

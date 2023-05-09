@@ -3,8 +3,6 @@
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<ResponsePvt *>(this->p)
-
 class ResponsePvt:public QObject
 {
 public:

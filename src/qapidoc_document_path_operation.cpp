@@ -1,12 +1,8 @@
 #include "./qapidoc_document_path_operation.h"
 #include <QUuid>
 #include <QVariant>
-//#include "./qapidoc_document_path.h"
-//#include "./qapidoc_meta_types.h"
 
 namespace QApiDoc {
-
-//#define dPvt() auto &p = *reinterpret_cast<PathOperationPvt *>(this->p)
 
 class PathOperationPvt:public QObject
 {

@@ -2,8 +2,6 @@
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<InfoContactPvt *>(this->p)
-
 class InfoContactPvt: public QObject
 {
 public:

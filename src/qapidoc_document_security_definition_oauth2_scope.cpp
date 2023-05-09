@@ -3,8 +3,6 @@
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionOAuth2ScopePvt *>(this->p)
-
 class SecurityDefinitionOAuth2ScopePvt:public QObject
 {
 public:

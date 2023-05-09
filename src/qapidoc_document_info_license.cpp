@@ -2,8 +2,6 @@
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<InfoLicensePvt *>(this->p)
-
 class InfoLicensePvt:public QObject
 {
 public:

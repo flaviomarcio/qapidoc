@@ -2,8 +2,6 @@
 
 namespace QApiDoc {
 
-//#define dPvt() auto &p = *reinterpret_cast<HeadersPvt *>(this->p)
-
 class HeadersPvt:public QObject
 {
 public:

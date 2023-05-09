@@ -7,8 +7,6 @@ typedef QHash<int, const QMetaObject *> SecurityDefinitionFactoryMetaObject;
 
 Q_GLOBAL_STATIC(SecurityDefinitionFactoryMetaObject, staticSecurityDefinitionMetaObject)
 
-//#define dPvt() auto &p = *reinterpret_cast<SecurityDefinitionPvt *>(this->p)
-
 class SecurityDefinitionPvt:public QObject
 {
 public:
