@@ -1,7 +1,7 @@
 QT += core
 
 CONFIG -= c++11
-CONFIG+=c++17
+#CONFIG+=c++17
 CONFIG+=silent
 
 QTREFORCE_QAPIDOC=true
