@@ -40,7 +40,7 @@ SecurityDefinition *SecurityDefinition::newInstance(QObject *parent,
 
     auto metaObject = staticSecurityDefinitionMetaObject->value(securityType);
 
-    auto object = metaObject->newInstance(Q_ARG(QObject*, parent));
+    auto object = metaObject->newInstance(Q_ARG(QObject *, parent));
     if (object == nullptr)
         delete object;
 
