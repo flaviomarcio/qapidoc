@@ -14,15 +14,11 @@ public:
     QString _description;
     QString _schemaNametion;
 
-    explicit SecurityDefinitionPvt(SecurityDefinition *parent) : QObject{parent}
-    {
-        this->parent = parent;
-    }
+    explicit SecurityDefinitionPvt(SecurityDefinition *parent) : QObject{parent}, parent{parent}{}
 };
 
-SecurityDefinition::SecurityDefinition(QObject *parent) : ObjectMapper{parent}
+SecurityDefinition::SecurityDefinition(QObject *parent) : ObjectMapper{parent}, p{new SecurityDefinitionPvt{this}}
 {
-    this->p = new SecurityDefinitionPvt{this};
 }
 
 bool SecurityDefinition::registerSecurityDefinition(int securityDefinitionType,

@@ -8,15 +8,11 @@ public:
     SecurityDefinitionApiKey *parent = nullptr;
     SecurityDefinitionApiKey::SecurityDefinitionApiKeyInLocation _inLocation;
     QString _name;
-    explicit SecurityDefinitionApiKeyPvt(SecurityDefinitionApiKey *parent):QObject{parent}
-    {
-        this->parent = parent;
-    }
+    explicit SecurityDefinitionApiKeyPvt(SecurityDefinitionApiKey *parent):QObject{parent}, parent{parent}{}
 };
 
-SecurityDefinitionApiKey::SecurityDefinitionApiKey(QObject *parent) : SecurityDefinition{parent}
+SecurityDefinitionApiKey::SecurityDefinitionApiKey(QObject *parent) : SecurityDefinition{parent}, p{new SecurityDefinitionApiKeyPvt{this}}
 {
-    this->p = new SecurityDefinitionApiKeyPvt{this};
 }
 
 SecurityDefinitionApiKey::SecurityDefinitionApiKeyInLocation SecurityDefinitionApiKey::inLocation()const

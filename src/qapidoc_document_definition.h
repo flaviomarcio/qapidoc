@@ -31,7 +31,6 @@ class Q_API_DOC_EXPORT Definition : public ObjectMapper
     Q_PROPERTY(QVariantHash schema READ schema WRITE setSchema NOTIFY schemaChanged)
 public:
     Q_INVOKABLE explicit Definition(QObject *parent = nullptr);
-    ~Definition();
 
     //    //!
     //    //! \brief toRefDefinition

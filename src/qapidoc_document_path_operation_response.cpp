@@ -13,12 +13,11 @@ public:
     QVariantHash _examples;
     QList<Headers *> _headers;
 
-    explicit ResponsePvt(Response *parent):QObject{parent} { this->parent = parent; }
+    explicit ResponsePvt(Response *parent):QObject{parent}, parent{parent} {}
 };
 
-Response::Response(QObject *parent) : ObjectMapper{parent}
+Response::Response(QObject *parent) : ObjectMapper{parent}, p{new ResponsePvt{this}}
 {
-    this->p = new ResponsePvt{this};
 }
 
 QString Response::statusCode() const

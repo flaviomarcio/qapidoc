@@ -9,17 +9,15 @@ public:
     QString _name;
     QString _url;
 
-    explicit InfoLicensePvt(InfoLicense *parent):QObject{parent} { this->parent = parent; }
+    explicit InfoLicensePvt(InfoLicense *parent):QObject{parent}, parent{parent} {}
 };
 
-InfoLicense::InfoLicense(QObject *parent) : ObjectMapper{parent}
+InfoLicense::InfoLicense(QObject *parent) : ObjectMapper{parent}, p{new InfoLicensePvt{this}}
 {
-    this->p = new InfoLicensePvt{this};
 }
 
 const QString &InfoLicense::url() const
-{
-    
+{    
     return p->_url;
 }
 

@@ -10,12 +10,11 @@ public:
     QString _format;
     QString _name;
     QString _type;
-    explicit HeadersPvt(Headers *parent):QObject{parent} { this->parent = parent; }
+    explicit HeadersPvt(Headers *parent):QObject{parent}, parent{parent} {}
 };
 
-Headers::Headers(QObject *parent) : ObjectMapper{parent}
+Headers::Headers(QObject *parent) : ObjectMapper{parent}, p{new HeadersPvt{this}}
 {
-    this->p = new HeadersPvt{this};
 }
 
 const QString &Headers::name() const

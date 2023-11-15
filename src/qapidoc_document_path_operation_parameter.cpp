@@ -26,12 +26,11 @@ public:
     Parameter::QApiParameterInLocation _inLocation = Parameter::srplPath;
     Parameter::QApiTypeParameter _typeParameter;
 
-    explicit ParameterPvt(Parameter *parent):QObject{parent} { this->parent = parent; }
+    explicit ParameterPvt(Parameter *parent):QObject{parent}, parent{parent} {}
 };
 
-Parameter::Parameter(QObject *parent) : ObjectMapper{parent}
+Parameter::Parameter(QObject *parent) : ObjectMapper{parent}, p{new ParameterPvt{this}}
 {
-    this->p = new ParameterPvt{this};
 }
 
 Parameter::QApiParameterInLocation Parameter::inLocation() const
@@ -122,7 +121,7 @@ Parameter &Parameter::setSchema(const Definition &newSchema)
 
 Parameter &Parameter::resetSchema()
 {
-    setSchema({});
+    setSchema(QVariant{});
     return *this;
 }
 

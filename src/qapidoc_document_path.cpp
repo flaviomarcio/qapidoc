@@ -8,7 +8,7 @@
 
 namespace QApiDoc {
 
-class PathPvt
+class PathPvt: public QObject
 {
 public:
     Path *parent = nullptr;
@@ -16,14 +16,12 @@ public:
     QList<Parameter *> _parameters;
     QString _uri;
 
-    explicit PathPvt(Path *parent) { this->parent = parent; }
+    explicit PathPvt(Path *parent):QObject{parent},parent{parent} { }
 
-    virtual ~PathPvt() {}
 };
 
-Path::Path(QObject *parent) : ObjectMapper{parent}
+Path::Path(QObject *parent) : ObjectMapper{parent}, p{new PathPvt{this}}
 {
-    this->p = new PathPvt{this};
 }
 
 QVariant Path::toVariant() const

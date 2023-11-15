@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QVariant>
 #include <QVariantHash>
 #include <QVariantList>
 #include "./qapidoc_common_types.h"

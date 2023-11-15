@@ -8,15 +8,12 @@ public:
     SecurityDefinitionBasic *parent = nullptr;
     QString _name;
 
-    explicit SecurityDefinitionBasicPvt(SecurityDefinitionBasic *parent):QObject{parent}
-    { this->parent = parent; }
+    explicit SecurityDefinitionBasicPvt(SecurityDefinitionBasic *parent):QObject{parent}, parent{parent}{}
 
-    virtual ~SecurityDefinitionBasicPvt() {}
 };
 
-SecurityDefinitionBasic::SecurityDefinitionBasic(QObject *parent) : SecurityDefinition{parent}
+SecurityDefinitionBasic::SecurityDefinitionBasic(QObject *parent) : SecurityDefinition{parent}, p{new SecurityDefinitionBasicPvt{this}}
 {
-    this->p = new SecurityDefinitionBasicPvt{this};
 }
 
 const QString &SecurityDefinitionBasic::name() const

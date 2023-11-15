@@ -9,13 +9,12 @@ public:
     QString _description;
     QString _url;
 
-    explicit DocumentExternalPvt(DocumentExternal *parent):QObject{parent} { this->parent = parent; }
+    explicit DocumentExternalPvt(DocumentExternal *parent):QObject{parent}, parent{parent}{}
 
 };
 
-DocumentExternal::DocumentExternal(QObject *parent) : ObjectMapper{parent}
+DocumentExternal::DocumentExternal(QObject *parent) : ObjectMapper{parent}, p{new DocumentExternalPvt{this}}
 {
-    this->p = new DocumentExternalPvt{this};
 }
 
 const QString &DocumentExternal::url() const

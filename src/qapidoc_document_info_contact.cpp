@@ -9,12 +9,11 @@ public:
     QString _email;
     QString _name;
     QString _url;
-    explicit InfoContactPvt(InfoContact *parent):QObject{parent} { this->parent = parent; }
+    explicit InfoContactPvt(InfoContact *parent):QObject{parent}, parent{parent} {}
 };
 
-InfoContact::InfoContact(QObject *parent) : ObjectMapper{parent}
+InfoContact::InfoContact(QObject *parent) : ObjectMapper{parent}, p{new InfoContactPvt{this}}
 {
-    this->p = new InfoContactPvt{this};
 }
 
 const QString &InfoContact::name() const

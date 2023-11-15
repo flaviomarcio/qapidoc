@@ -29,15 +29,13 @@ public:
     QList<SecurityDefinition *> securityDefinitions;
     QList<Tag *> tags;
     QApiTransferProtocolSchemes schemes;
-    explicit DocumentPvt(Document *parent):QObject{parent}
+    explicit DocumentPvt(Document *parent):QObject{parent}, parent{parent}
     {
-        this->parent = parent;
     }
 };
 
-Document::Document(QObject *parent) : ObjectMapper{parent}
+Document::Document(QObject *parent) : ObjectMapper{parent}, p{new DocumentPvt{this}}
 {
-    this->p = new DocumentPvt{this};
 }
 
 const QByteArray &Document::version() const

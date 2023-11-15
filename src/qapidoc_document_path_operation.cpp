@@ -21,12 +21,11 @@ public:
     QHash<QString, Response *> responses;
     QList<Parameter *> parameters;
 
-    explicit PathOperationPvt(PathOperation *parent):QObject{parent} { this->parent = parent; }
+    explicit PathOperationPvt(PathOperation *parent):QObject{parent}, parent{parent} {}
 };
 
-PathOperation::PathOperation(QObject *parent) : ObjectMapper{parent}
+PathOperation::PathOperation(QObject *parent) : ObjectMapper{parent}, p{new PathOperationPvt{this}}
 {
-    this->p = new PathOperationPvt{this};
 }
 
 PathOperation::QApiPathTypeOperation PathOperation::operation() const

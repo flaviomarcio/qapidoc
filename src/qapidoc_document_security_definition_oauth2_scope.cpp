@@ -9,22 +9,18 @@ public:
     SecurityDefinitionOAuth2Scope *parent = nullptr;
     QString _description;
     QString _scopeName;
-    explicit SecurityDefinitionOAuth2ScopePvt(SecurityDefinitionOAuth2Scope *parent):QObject{parent}
+    explicit SecurityDefinitionOAuth2ScopePvt(SecurityDefinitionOAuth2Scope *parent):QObject{parent},parent{parent}
     {
-        this->parent = parent;
     }
 
-    virtual ~SecurityDefinitionOAuth2ScopePvt() {}
 };
 
-SecurityDefinitionOAuth2Scope::SecurityDefinitionOAuth2Scope(QObject *parent) : ObjectMapper{parent}
+SecurityDefinitionOAuth2Scope::SecurityDefinitionOAuth2Scope(QObject *parent) : ObjectMapper{parent}, p{new SecurityDefinitionOAuth2ScopePvt{this}}
 {
-    this->p = new SecurityDefinitionOAuth2ScopePvt{this};
 }
 
 const QString &SecurityDefinitionOAuth2Scope::description() const
-{
-    
+{   
     return p->_description;
 }
 
@@ -36,8 +32,7 @@ SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::description(
 
 SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::setDescription(
     const QString &newDescription)
-{
-    
+{   
     if (p->_description == newDescription)
         return *this;
     p->_description = newDescription;
@@ -51,8 +46,7 @@ SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::resetDescription()
 }
 
 const QString &SecurityDefinitionOAuth2Scope::scopeName() const
-{
-    
+{   
     return p->_scopeName;
 }
 
@@ -63,8 +57,7 @@ SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::scopeName(const QS
 
 SecurityDefinitionOAuth2Scope &SecurityDefinitionOAuth2Scope::setScopeName(
     const QString &newScopeName)
-{
-    
+{   
     if (p->_scopeName == newScopeName)
         return *this;
     p->_scopeName = newScopeName;

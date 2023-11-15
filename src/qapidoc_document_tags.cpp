@@ -11,19 +11,16 @@ public:
     QString description;
     QString name;
 
-    explicit TagPvt(Tag *parent):QObject{parent} { this->parent = parent; }
+    explicit TagPvt(Tag *parent):QObject{parent},parent{parent} {}
 
-    virtual ~TagPvt() {}
 };
 
-Tag::Tag(QObject *parent) : ObjectMapper{parent}
+Tag::Tag(QObject *parent) : ObjectMapper{parent}, p{new TagPvt{this}}
 {
-    this->p = new TagPvt{this};
 }
 
 const QString &Tag::description() const
 {
-
     return p->description;
 }
 
@@ -34,7 +31,6 @@ Tag &Tag::description(const QString &newDescription)
 
 Tag &Tag::setDescription(const QString &newDescription)
 {
-
     if (p->description == newDescription)
         return *this;
     p->description = newDescription;
@@ -49,13 +45,11 @@ Tag &Tag::resetDescription()
 
 const DocumentExternal &Tag::externalDocs() const
 {
-
     return p->externalDocs;
 }
 
 QVariantHash Tag::externalDocsObject() const
 {
-
     return p->externalDocs.toVariant().toHash();
 }
 
@@ -66,7 +60,6 @@ Tag &Tag::externalDocs(const QVariant &newExternalDocs)
 
 Tag &Tag::setExternalDocs(const QVariant &newExternalDocs)
 {
-
     p->externalDocs.load(newExternalDocs);
     emit externalDocsChanged();
     return *this;
@@ -74,7 +67,6 @@ Tag &Tag::setExternalDocs(const QVariant &newExternalDocs)
 
 Tag &Tag::setExternalDocs(const DocumentExternal &newExternalDocs)
 {
-
     p->externalDocs.load(newExternalDocs.toVariant());
     emit externalDocsChanged();
     return *this;
@@ -87,7 +79,6 @@ Tag &Tag::resetExternalDocs()
 
 const QString &Tag::name() const
 {
-
     return p->name;
 }
 
@@ -98,7 +89,6 @@ Tag &Tag::name(const QString &newName)
 
 Tag &Tag::setName(const QString &newName)
 {
-
     if (p->name == newName)
         return *this;
     p->name = newName;

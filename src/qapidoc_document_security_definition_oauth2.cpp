@@ -11,15 +11,11 @@ public:
     QString _authorizationUrl;
     QString _flow;
     QList<SecurityDefinitionOAuth2Scope *> _scopes;
-    explicit SecurityDefinitionOAuth2Pvt(SecurityDefinitionOAuth2 *parent):QObject{parent}
-    {
-        this->parent = parent;
-    }
+    explicit SecurityDefinitionOAuth2Pvt(SecurityDefinitionOAuth2 *parent):QObject{parent}, parent{parent}{}
 };
 
-SecurityDefinitionOAuth2::SecurityDefinitionOAuth2(QObject *parent) : SecurityDefinition{parent}
+SecurityDefinitionOAuth2::SecurityDefinitionOAuth2(QObject *parent) : SecurityDefinition{parent}, p{new SecurityDefinitionOAuth2Pvt{this}}
 {
-    this->p = new SecurityDefinitionOAuth2Pvt{this};
 }
 
 SecurityDefinition::SecurityDefinitionType SecurityDefinitionOAuth2::typeSecurity() const

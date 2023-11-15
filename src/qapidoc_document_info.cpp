@@ -14,17 +14,16 @@ public:
     QString _title;
     QString _version;
 
-    explicit InfoPvt(Info *parent):QObject{parent} { this->parent = parent; }
+    explicit InfoPvt(Info *parent):QObject{parent},parent{parent} {}
 };
 
-Info::Info(QObject *parent) : ObjectMapper{parent}
+Info::Info(QObject *parent) : ObjectMapper{parent}, p{new InfoPvt{this}}
 {
-    this->p = new InfoPvt{this};
 }
 
 const QString &Info::version() const
 {
-    
+
     return p->_version;
 }
 
@@ -36,7 +35,7 @@ Info &Info::version(const QString &newVersion)
 
 Info &Info::setVersion(const QString &newVersion)
 {
-    
+
     if (p->_version == newVersion)
         return *this;
     p->_version = newVersion;
@@ -78,7 +77,7 @@ Info &Info::resetTitle()
 
 const QString &Info::description() const
 {
-    
+
     return p->_description;
 }
 
@@ -104,8 +103,7 @@ Info &Info::resetDescription()
 }
 
 const QString &Info::termsOfService()
-{
-    
+{   
     return p->_termsOfService;
 }
 
@@ -116,8 +114,7 @@ Info &Info::termsOfService(const QString &newTermsOfService)
 }
 
 Info &Info::setTermsOfService(const QString &newTermsOfService)
-{
-    
+{   
     if (p->_termsOfService == newTermsOfService)
         return *this;
     p->_termsOfService = newTermsOfService;
@@ -131,14 +128,12 @@ Info &Info::resetTermsOfService()
 }
 
 InfoContact &Info::contact()
-{
-    
+{   
     return p->_contact;
 }
 
 QVariantHash Info::contactObject() const
-{
-    
+{   
     return p->_contact.toVariant().toHash();
 }
 
@@ -148,36 +143,31 @@ Info &Info::contact(const QVariant &newContact)
 }
 
 Info &Info::setContact(const QVariant &newContact)
-{
-    
+{   
     p->_contact.load(newContact);
     return *this;
 }
 
 Info &Info::setContact(const InfoContact &newContact)
-{
-    
+{   
     p->_contact.load(newContact.toVariant());
     emit contactChanged();
     return *this;
 }
 
 Info &Info::resetContact()
-{
-    
+{   
     p->_contact.clear();
     return *this;
 }
 
 InfoLicense &Info::license()
-{
-    
+{   
     return p->_license;
 }
 
 QVariantHash Info::licenseObject() const
-{
-    
+{   
     return p->_license.toVariant().toHash();
 }
 
@@ -187,23 +177,20 @@ Info &Info::license(const QVariant &newLicense)
 }
 
 Info &Info::setLicense(const QVariant &newLicense)
-{
-    
+{   
     p->_license.load(newLicense);
     return *this;
 }
 
 Info &Info::setLicense(const InfoLicense &newLicense)
-{
-    
+{   
     p->_license.load(newLicense.toVariant());
     emit licenseChanged();
     return *this;
 }
 
 Info &Info::resetLicense()
-{
-    
+{   
     p->_license.clear();
     return *this;
 }
